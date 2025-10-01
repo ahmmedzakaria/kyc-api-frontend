@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Kyc } from '../../../core/services/kyc.service';
-import {NgForOf, NgIf} from "@angular/common";
+import {NgForOf} from "@angular/common";
 
 @Component({
     selector: 'app-kyc-table',
     imports: [
         NgForOf,
-        NgIf
     ],
     templateUrl: './kyc-table.component.html'
 })
