@@ -1,0 +1,9 @@
+<div>
+  <button routerLink="/kyc/create">Create New</button>
+  <app-kyc-table [kycList]="kycList" (edit)="onEdit($event)" (delete)="onDelete($event)"></app-kyc-table>
+
+  <div *ngIf="editingKyc">
+    <h3>Edit</h3>
+    <app-kyc-form [kycData]="editingKyc" (saved)="onSaved($event)"></app-kyc-form>
+  </div>
+</div>

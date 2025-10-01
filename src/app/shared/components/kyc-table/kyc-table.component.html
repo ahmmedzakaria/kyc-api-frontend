@@ -1,0 +1,25 @@
+<table>
+    <thead>
+    <tr>
+        <th>Photo</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+  <tbody>
+    <tr *ngFor="let kyc of kycList">
+        <td>
+            <img *ngIf="kyc.photo" [src]="getPhotoUrl(kyc)" alt="Photo" width="50" height="50">
+        </td>
+      <td>{{ kyc.name }}</td>
+      <td>{{ kyc.email }}</td>
+      <td>{{ kyc.phone }}</td>
+      <td>
+        <button (click)="edit.emit(kyc)">Edit</button>
+        <button (click)="delete.emit(kyc)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

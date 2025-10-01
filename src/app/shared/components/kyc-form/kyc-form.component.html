@@ -1,0 +1,7 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div><label>Name</label><input formControlName="name" placeholder="Name" /></div>
+  <div><label>Email</label><input formControlName="email" placeholder="Email" /></div>
+  <div><label>Phone</label><input formControlName="phone" placeholder="Phone" /></div>
+  <div><label>Photo</label><input type="file" (change)="onFileSelected($event)" /></div>
+  <div><button type="submit" [disabled]="form.invalid">Save</button></div>
+</form>
