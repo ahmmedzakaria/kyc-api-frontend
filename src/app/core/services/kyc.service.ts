@@ -5,7 +5,7 @@ import { API } from '../config/api.config';
 import {switchMap} from "rxjs/operators";
 import {AuthService} from "./auth.service";
 
-export interface Kyc { id?: number; name: string; email: string; phone: string; photoUrl?: string; photo?: any}
+export interface Kyc { id?: number; name: string; email: string; phone: string; photoUrl?: string; photoString?: any}
 
 @Injectable({ providedIn: 'root' })
 export class KycService {

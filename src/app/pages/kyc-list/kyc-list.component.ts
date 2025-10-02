@@ -25,7 +25,7 @@ export class KycListComponent implements OnInit {
 
   loadKyc() {
     this.kycService.searchKyc().subscribe(res => {
-      this.kycList = res.content ? res.content.map((it: any) => ({ id: it.id, name: it.firstName, email: it.email, phone: it.phone, photo:it.photo })) : res;
+      this.kycList = res.content ? res.content.map((it: any) => ({ id: it.id, name: it.firstName, email: it.email, phone: it.phone, photoString:it.photoString })) : res;
     });
   }
 

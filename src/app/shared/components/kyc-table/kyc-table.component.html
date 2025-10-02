@@ -11,7 +11,7 @@
   <tbody>
     <tr *ngFor="let kyc of kycList">
         <td>
-            <img *ngIf="kyc.photo" [src]="getPhotoUrl(kyc)" alt="Photo" width="50" height="50">
+            <img *ngIf="kyc.photoString" [src]="getPhotoUrl(kyc)" alt="Photo" width="50" height="50">
         </td>
       <td>{{ kyc.name }}</td>
       <td>{{ kyc.email }}</td>
