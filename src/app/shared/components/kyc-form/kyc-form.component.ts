@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { KycService, Kyc } from '../../../core/services/kyc.service';
+import {NgIf} from "@angular/common";
 
 @Component({
     selector: 'app-kyc-form',
     imports: [
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        NgIf
     ],
     templateUrl: './kyc-form.component.html'
 })
@@ -41,7 +43,7 @@ export class KycFormComponent {
     if (this.kycData?.id) {
 
         formData.append('id', this.kycData?.id?.toString());
-      this.kycService.updateKyc(this.kycData.id, formData).subscribe(res => this.saved.emit(res));
+      this.kycService.updateKyc(formData).subscribe(res => this.saved.emit(res));
     } else {
       this.kycService.createKyc(formData).subscribe(res => this.saved.emit(res));
     }
