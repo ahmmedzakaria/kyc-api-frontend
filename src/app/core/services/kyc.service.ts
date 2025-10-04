@@ -36,32 +36,36 @@ export class KycService {
         return this.apiService.post<Kyc>(ApiEndpoints.KYC_UPDATE, data);
     }
 
-    deleteKyc(id: number): Observable<void> {
-        return this.http.post<void>(`${API.BASE_URL}${API.KYC.DELETE}/${id}`, {headers: this.getAuthHeaders(false)});
+    deleteKyc(id: number): Observable<Kyc> {
+        return this.apiService.post<Kyc>(ApiEndpoints.KYC_DELETE, { id });
     }
 
-    searchKyc(name?: string, page: number = 0, size: number = 10): Observable<any> {
-        let params = new HttpParams().set('page', `${page}`).set('size', `${size}`);
-        if (name) params = params.set('name', name);
-        let headers = this.getAuthHeaders(false);
+    searchKyc(searchText?: string, page: number = 0, size: number = 10): Observable<any> {
+        return this.apiService.post<Kyc>(ApiEndpoints.KYC_SEARCH, { page,size,searchText });
+     }
 
-        return this.http.get<any>(`${API.BASE_URL}${API.KYC.SEARCH}`, {params, headers});
-    }
+    // searchKyc(name?: string, page: number = 0, size: number = 10): Observable<any> {
+    //     let params = new HttpParams().set('page', `${page}`).set('size', `${size}`);
+    //     if (name) params = params.set('name', name);
+    //     let headers = this.getAuthHeaders(false);
+    //
+    //     return this.http.get<any>(`${API.BASE_URL}${API.KYC.SEARCH}`, {params, headers});
+    // }
 
     getPhoto(photoPath: string) {
         return `${API.BASE_URL}${API.KYC.PHOTO(photoPath)}`;
     }
 
 
-    private getAuthHeaders(isFileUpload: boolean): HttpHeaders {
-
-        return isFileUpload ?
-            new HttpHeaders({
-                'Authorization': `Bearer ${this.authService.getToken()}`
-            }) :
-            new HttpHeaders({
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.authService.getToken()}`
-            })
-    }
+    // private getAuthHeaders(isFileUpload: boolean): HttpHeaders {
+    //
+    //     return isFileUpload ?
+    //         new HttpHeaders({
+    //             'Authorization': `Bearer ${this.authService.getToken()}`
+    //         }) :
+    //         new HttpHeaders({
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${this.authService.getToken()}`
+    //         })
+    // }
 }

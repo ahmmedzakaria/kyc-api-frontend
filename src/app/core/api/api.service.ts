@@ -1,92 +1,71 @@
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError, from } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
-import {environment} from "./environment";
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import {AuthService} from "../services/auth.service";
 import {ActionTypes} from "./api-endpoints";
+import {Environment} from "./environment";
+import {ApiEndpoint} from "./model/endpoint";
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class ApiService {
+    private baseUrl = Environment.apiBaseUrl;
+    private loginUrl = Environment.loginUrl;
 
-    private baseUrl = environment.apiBaseUrl
-    private loginUrl = environment.loginUrl
+    public getToken() {
+        return localStorage.getItem('token');
+    }
 
     constructor(private http: HttpClient) {}
 
     /**
-     * Get Token from local storage
+     * Build headers (Auth + JSON/multipart)
      */
-    public getToken() {
-        console.log(localStorage.getItem('token'))
-        return localStorage.getItem('token');
+    private buildHeaders(isMultiPart: boolean = false): HttpHeaders {
+        const token = this.getToken();
+        let headers = new HttpHeaders();
+
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
+        }
+
+        if (!isMultiPart) {
+            headers = headers.set('Content-Type', 'application/json');
+        }
+
+        return headers;
     }
 
     /**
-     * Get JWT auth headers as observable
+     * Generalized POST for all actions (create, update, delete, search, login)
      */
-    private getAuthHeaders(apiInfo: any): Observable<HttpHeaders> {
-        return from(
-            Promise.resolve(
-                apiInfo.isMultiPart ?
-                    new HttpHeaders({
-                        'Authorization': `Bearer ${this.getToken()}`
-                    }) :
-                    new HttpHeaders({
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${this.getToken()}`
-                    })
-            )
-        );
-    }
+    post<T>(apiInfo: ApiEndpoint, body: any = {}): Observable<T> {
+        // Inject standard "source" property
+        body.source = "KYC_APP";
 
-    /**
-     * Generalized POST method
-     * @param apiInfo - API detail information
-     * @param body - request body
-     * @param options - extra request options (headers, responseType, etc.)
-     */
-    post<T>(
-        apiInfo: any,
-        body: any,
-        options: { headers?: HttpHeaders; responseType?: any; observe?: any } = {}
-    ): Observable<T> {
-        return this.getAuthHeaders(apiInfo).pipe(
-            switchMap(headers => {
-                const requestOptions = {
-                    ...options,
-                    headers: options.headers || headers
-                };
-                body.source = "KYC_APP"
-                console.log(body);
-                let basePath = (apiInfo.actionType = ActionTypes.LOGIN)?this.loginUrl : this.baseUrl;
-                return this.http.post<T>(`${basePath}/${apiInfo.apiPath}`, body, requestOptions);
-            }),
+        // Decide base path: login requests go to loginUrl
+        const basePath = (apiInfo.actionType === ActionTypes.LOGIN) ? this.loginUrl : this.baseUrl;
+
+        const headers = this.buildHeaders(apiInfo.isMultiPart);
+        const requestOptions = { headers };
+
+        return this.http.post<T>(`${basePath}/${apiInfo.apiPath}`, body, requestOptions).pipe(
             catchError(this.handleError)
         );
-    }
-
-    /**
-     * Example helper to wrap API info object usage
-     */
-    postHandler<T>(apiInfo: any, payload: any = {}): Observable<T> {
-        if (!apiInfo) {
-            return throwError(() => new Error('API information is missing'));
-        }
-        return this.post<T>(apiInfo.apiPath, payload);
     }
 
     /**
      * Error handler
      */
     private handleError(error: HttpErrorResponse) {
-        console.error('API error occurred:', error);
+        console.error('API Error:', error);
         let errorMsg = 'An unknown error occurred';
         if (error.error instanceof ErrorEvent) {
             errorMsg = `Client error: ${error.error.message}`;
-        } else if (error.status) {
+        } else {
             errorMsg = `Server error (${error.status}): ${error.message}`;
         }
         return throwError(() => new Error(errorMsg));
