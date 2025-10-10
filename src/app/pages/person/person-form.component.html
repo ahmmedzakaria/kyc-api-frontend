@@ -99,7 +99,11 @@
 <!--                        {{ loc.detailLocation }}-->
 <!--                    </li>-->
 <!--                </ul>-->
-                <label>Current Location</label>
+<!--                <label>Current Location</label>-->
+<!--                <app-location-dropdown-->
+<!--                        placeholder="Search Current Location"-->
+<!--                        (locationSelected)="onLocationSelected('currentLocationId', $event)">-->
+<!--                </app-location-dropdown>-->
                 <app-location-dropdown
                         placeholder="Search Current Location"
                         (locationSelected)="onLocationSelected('currentLocationId', $event)">
@@ -123,7 +127,11 @@
 <!--                        {{ loc.name }}-->
 <!--                    </li>-->
 <!--                </ul>-->
-                <label>Permanent Location</label>
+<!--                <label>Permanent Location</label>-->
+<!--                <app-location-dropdown-->
+<!--                        placeholder="Search Permanent Location"-->
+<!--                        (locationSelected)="onLocationSelected('permanentLocationId', $event)">-->
+<!--                </app-location-dropdown>-->
                 <app-location-dropdown
                         placeholder="Search Permanent Location"
                         (locationSelected)="onLocationSelected('permanentLocationId', $event)">

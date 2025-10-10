@@ -101,8 +101,12 @@ export class PersonFormComponent {
         this.setupLocationSearch('currentLocationId', 'currentLocationResults');
         this.setupLocationSearch('permanentLocationId', 'permanentLocationResults');
     }
+    // onLocationSelected(controlName: string, location: any) {
+    //     this.form.patchValue({ [controlName]: location.id });
+    // }
+
     onLocationSelected(controlName: string, location: any) {
-        this.form.patchValue({ [controlName]: location.id });
+        this.form.patchValue({ [controlName]: location?.id || null });
     }
 
 
