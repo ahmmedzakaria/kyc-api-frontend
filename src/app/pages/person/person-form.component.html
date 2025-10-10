@@ -1,0 +1,132 @@
+<div class="card shadow p-4 mb-4">
+    <h4>{{ personData ? 'Edit Person' : 'Create Person' }}</h4>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <!-- Basic Info -->
+        <h5 class="mb-3 border-bottom pb-2">Basic Information</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Username</label>
+                <input class="form-control" formControlName="username" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Email</label>
+                <input class="form-control" formControlName="email" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Mobile</label>
+                <input class="form-control" formControlName="mobileNumber" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>National ID</label>
+                <input class="form-control" formControlName="nationalId" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Gender</label>
+                <div>
+                    <label class="me-3"><input type="radio" formControlName="gender" value="MALE" /> Male</label>
+                    <label><input type="radio" formControlName="gender" value="FEMALE" /> Female</label>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Blood Group</label>
+                <select class="form-select" formControlName="bloodGroup">
+                    <option value="">Select</option>
+                    <option *ngFor="let b of bloodGroups" [value]="b">{{ b }}</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Date of Birth</label>
+                <input type="date" class="form-control" formControlName="dateOfBirth" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Photo</label>
+                <input type="file" class="form-control" (change)="onFileSelected($event)" />
+                <div class="mt-2 text-center">
+                    <img *ngIf="photoPreview" [src]="photoPreview" class="rounded shadow-sm" width="120" height="120" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Family Info -->
+        <h5 class="mb-3 border-bottom pb-2">Family Information</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3"><label>Father Name</label><input class="form-control" formControlName="fatherName" /></div>
+            <div class="col-md-6 mb-3"><label>Father Mobile</label><input class="form-control" formControlName="fatherMobileNumber" /></div>
+            <div class="col-md-6 mb-3"><label>Mother Name</label><input class="form-control" formControlName="motherName" /></div>
+            <div class="col-md-6 mb-3"><label>Mother Mobile</label><input class="form-control" formControlName="motherMobileNumber" /></div>
+            <div class="col-md-6 mb-3"><label>Emergency Contact</label><input class="form-control" formControlName="emergencyContactPerson" /></div>
+            <div class="col-md-6 mb-3">
+                <label>Relation</label>
+                <select class="form-select" formControlName="emergencyContactPersonRelation">
+                    <option value="">Select</option>
+                    <option *ngFor="let r of relations" [value]="r">{{ r }}</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3"><label>Emergency Contact Number</label><input class="form-control" formControlName="emergencyContactNumber" /></div>
+        </div>
+
+        <!-- Education Info -->
+        <h5 class="mb-3 border-bottom pb-2">Education Information</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label>Level</label>
+                <select class="form-select" formControlName="educationLevel">
+                    <option value="">Select</option>
+                    <option *ngFor="let e of educationLevels" [value]="e">{{ e }}</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3"><label>Institution</label><input class="form-control" formControlName="institutionName" /></div>
+            <div class="col-md-4 mb-3">
+                <label>Passing Year</label>
+                <select class="form-select" formControlName="passingYear">
+                    <option value="">Select</option>
+                    <option *ngFor="let y of passingYears" [value]="y">{{ y }}</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Address Info -->
+        <h5 class="mb-3 border-bottom pb-2">Address Information</h5>
+        <div class="row">
+            <!-- Current -->
+            <div class="col-md-6">
+                <label>Current Location</label>
+                <input type="text" class="form-control" formControlName="currentLocationId" placeholder="Search location..." />
+                <ul *ngIf="currentLocationResults.length" class="list-group">
+                    <li *ngFor="let loc of currentLocationResults" class="list-group-item list-group-item-action"
+                        (click)="selectLocation('current', loc)">
+                        {{ loc.detailLocation }}
+                    </li>
+                </ul>
+                <label class="mt-2">Current Address</label>
+                <textarea class="form-control" formControlName="currentAddress" rows="2"></textarea>
+            </div>
+
+            <!-- Permanent -->
+            <div class="col-md-6">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" formControlName="sameAddress" />
+                    <label class="form-check-label">Same as current address</label>
+                </div>
+
+                <label>Permanent Location</label>
+                <input type="text" class="form-control" formControlName="permanentLocationId" placeholder="Search location..." />
+                <ul *ngIf="permanentLocationResults.length" class="list-group">
+                    <li *ngFor="let loc of permanentLocationResults" class="list-group-item list-group-item-action"
+                        (click)="selectLocation('permanent', loc)">
+                        {{ loc.name }}
+                    </li>
+                </ul>
+                <label class="mt-2">Permanent Address</label>
+                <textarea class="form-control" formControlName="permanentAddress" rows="2"></textarea>
+            </div>
+        </div>
+
+        <div class="mt-4 text-end">
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+                <i class="fa fa-save me-2"></i> Save
+            </button>
+        </div>
+    </form>
+</div>

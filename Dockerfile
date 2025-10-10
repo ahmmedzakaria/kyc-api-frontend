@@ -1,20 +1,14 @@
-# frontend/Dockerfile
-# build stage
-FROM node:20-alpine AS builder
+# Stage 1 - Build Angular app
+FROM node:20 AS build
 WORKDIR /app
-ENV CI=true
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY angular.json tsconfig*.json ./
-COPY src ./src
-RUN npm run build -- --configuration=production
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build --prod
 
-# production nginx stage
-FROM nginx:1.26-alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# custom nginx config - optional for SPA routing
+# Stage 2 - Serve with nginx
+FROM nginx:stable-alpine
+COPY --from=build /app/dist/kyc-frontend /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 4200
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
