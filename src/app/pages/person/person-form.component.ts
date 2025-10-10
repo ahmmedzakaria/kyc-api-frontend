@@ -7,12 +7,13 @@ import { of } from 'rxjs';
 import {Person} from "./person.model";
 import {PersonService} from "../../core/services/person.service";
 import {GisService} from "../../core/services/gis.service";
+import {LocationDropdownComponent} from "./location-dropdown.component";
 
 
 @Component({
     selector: 'app-person-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+    imports: [CommonModule, ReactiveFormsModule, HttpClientModule, LocationDropdownComponent],
     templateUrl: './person-form.component.html',
     // styleUrls: ['./person-form.component.scss']
 })
@@ -100,6 +101,10 @@ export class PersonFormComponent {
         this.setupLocationSearch('currentLocationId', 'currentLocationResults');
         this.setupLocationSearch('permanentLocationId', 'permanentLocationResults');
     }
+    onLocationSelected(controlName: string, location: any) {
+        this.form.patchValue({ [controlName]: location.id });
+    }
+
 
     private setupLocationSearch(controlName: string, resultKey: string) {
         // this.form.controls[controlName]?.valueChanges.pipe(
@@ -122,7 +127,7 @@ export class PersonFormComponent {
             })
         ).subscribe((results: any) => {
             (this as any)[resultKey] = results.content;
-            console.log(this.currentLocationResults);
+           // console.log(this.currentLocationResults);
         });
     }
 

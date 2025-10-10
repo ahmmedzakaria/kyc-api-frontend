@@ -1,0 +1,19 @@
+<div class="location-dropdown">
+    <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="onSearch(searchTerm)"
+            [placeholder]="placeholder"
+            class="search-input"
+    />
+
+    <div class="dropdown-list" (scroll)="onScroll($event)">
+        <div *ngIf="isLoading" class="loading">Loading...</div>
+
+        <div *ngFor="let loc of locations" class="dropdown-item" (click)="selectLocation(loc)">
+            {{ loc.detailLocation }}
+        </div>
+
+        <div *ngIf="!isLoading && locations.length === 0" class="no-results">No results</div>
+    </div>
+</div>

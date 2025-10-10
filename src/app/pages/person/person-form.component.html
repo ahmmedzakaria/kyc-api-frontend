@@ -91,14 +91,19 @@
         <div class="row">
             <!-- Current -->
             <div class="col-md-6">
+<!--                <label>Current Location</label>-->
+<!--                <input type="text" class="form-control" formControlName="currentLocationId" placeholder="Search location..." />-->
+<!--                <ul *ngIf="currentLocationResults.length" class="list-group">-->
+<!--                    <li *ngFor="let loc of currentLocationResults" class="list-group-item list-group-item-action"-->
+<!--                        (click)="selectLocation('current', loc)">-->
+<!--                        {{ loc.detailLocation }}-->
+<!--                    </li>-->
+<!--                </ul>-->
                 <label>Current Location</label>
-                <input type="text" class="form-control" formControlName="currentLocationId" placeholder="Search location..." />
-                <ul *ngIf="currentLocationResults.length" class="list-group">
-                    <li *ngFor="let loc of currentLocationResults" class="list-group-item list-group-item-action"
-                        (click)="selectLocation('current', loc)">
-                        {{ loc.detailLocation }}
-                    </li>
-                </ul>
+                <app-location-dropdown
+                        placeholder="Search Current Location"
+                        (locationSelected)="onLocationSelected('currentLocationId', $event)">
+                </app-location-dropdown>
                 <label class="mt-2">Current Address</label>
                 <textarea class="form-control" formControlName="currentAddress" rows="2"></textarea>
             </div>
@@ -110,14 +115,19 @@
                     <label class="form-check-label">Same as current address</label>
                 </div>
 
+<!--                <label>Permanent Location</label>-->
+<!--                <input type="text" class="form-control" formControlName="permanentLocationId" placeholder="Search location..." />-->
+<!--                <ul *ngIf="permanentLocationResults.length" class="list-group">-->
+<!--                    <li *ngFor="let loc of permanentLocationResults" class="list-group-item list-group-item-action"-->
+<!--                        (click)="selectLocation('permanent', loc)">-->
+<!--                        {{ loc.name }}-->
+<!--                    </li>-->
+<!--                </ul>-->
                 <label>Permanent Location</label>
-                <input type="text" class="form-control" formControlName="permanentLocationId" placeholder="Search location..." />
-                <ul *ngIf="permanentLocationResults.length" class="list-group">
-                    <li *ngFor="let loc of permanentLocationResults" class="list-group-item list-group-item-action"
-                        (click)="selectLocation('permanent', loc)">
-                        {{ loc.name }}
-                    </li>
-                </ul>
+                <app-location-dropdown
+                        placeholder="Search Permanent Location"
+                        (locationSelected)="onLocationSelected('permanentLocationId', $event)">
+                </app-location-dropdown>
                 <label class="mt-2">Permanent Address</label>
                 <textarea class="form-control" formControlName="permanentAddress" rows="2"></textarea>
             </div>
