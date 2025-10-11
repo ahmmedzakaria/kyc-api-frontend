@@ -1,4 +1,4 @@
-<div class="date-picker mb-3">
+<div class="date-picker">
     <div class="form-floating position-relative">
         <input
                 class="form-control"
@@ -12,7 +12,6 @@
         <i *ngIf="showIcon" class="fa-solid fa-calendar-days calendar-icon" (click)="toggleCalendar()"></i>
     </div>
 
-    <!-- Popover Calendar -->
     <div class="calendar-popover" *ngIf="isOpen">
         <div class="calendar-header">
             <button class="btn btn-sm" (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
@@ -23,24 +22,21 @@
         <div class="calendar-body">
             <div class="month-container" *ngFor="let month of monthMatrix">
                 <div class="month-label">{{ month.label }}</div>
-                <div class="calendar-grid">
-                    <div class="calendar-day header" *ngFor="let d of ['Su','Mo','Tu','We','Th','Fr','Sa']">{{ d }}</div>
-
-                    <div *ngFor="let week of month.days" class="calendar-week">
-                        <div
-                                *ngFor="let day of week"
-                                class="calendar-day"
-                                [ngClass]="{
-                'disabled': !day,
-                'selected': day && isSelected(day),
-                'in-range': day && isInRange(day),
-                'range-start': day && isStart(day),
-                'range-end': day && isEnd(day)
-              }"
-                                (click)="day && selectDate(day)"
-                        >
-                            {{ day ? day.getDate() : '' }}
-                        </div>
+                <div class="calendar-row">
+                    <div
+                            *ngFor="let day of month.days"
+                            class="calendar-day"
+                            [ngClass]="{
+              'selected': isSelected(day),
+              'in-range': isInRange(day),
+              'range-start': isStart(day),
+              'range-end': isEnd(day)
+            }"
+                            (mouseenter)="onHover(day)"
+                            (mouseleave)="onHover(null)"
+                            (click)="selectDate(day)"
+                    >
+                        {{ day.getDate() }}
                     </div>
                 </div>
             </div>

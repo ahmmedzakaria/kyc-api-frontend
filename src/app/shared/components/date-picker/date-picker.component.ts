@@ -24,28 +24,27 @@ export interface DateRange {
 export class DatePickerComponent implements ControlValueAccessor, OnInit {
     @Input() label = 'Select Date';
     @Input() rangeMode = false;
-    @Input() required = false;
+    @Input() monthsToShow = 2;
     @Input() disablePast = false;
     @Input() disableFuture = false;
-    @Input() monthsToShow = 2; // 👈 multi-month horizontal display
     @Input() showIcon = true;
-    @Input() floating = true;
 
     @Output() dateChange = new EventEmitter<string | DateRange | null>();
 
     control = new FormControl<string | null>(null);
     range: DateRange = { start: null, end: null };
-    isOpen = false;
+    hoverDate: string | null = null;
 
-    baseMonth = new Date(); // first visible month
-    monthMatrix: { label: string; days: (Date | null)[][] }[] = [];
+    baseMonth = new Date();
+    monthMatrix: { label: string; days: Date[] }[] = [];
+    isOpen = false;
 
     onChange = (_: any) => {};
     onTouched = () => {};
 
     constructor(private eRef: ElementRef) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.generateMonths();
     }
 
@@ -53,28 +52,21 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
         this.monthMatrix = [];
         for (let i = 0; i < this.monthsToShow; i++) {
             const monthDate = new Date(this.baseMonth.getFullYear(), this.baseMonth.getMonth() + i);
+            const days = this.generateDays(monthDate);
             this.monthMatrix.push({
                 label: monthDate.toLocaleString('default', { month: 'long', year: 'numeric' }),
-                days: this.generateCalendar(monthDate)
+                days
             });
         }
     }
 
-    private generateCalendar(base: Date): (Date | null)[][] {
+    private generateDays(base: Date): Date[] {
         const start = new Date(base.getFullYear(), base.getMonth(), 1);
         const end = new Date(base.getFullYear(), base.getMonth() + 1, 0);
-        const days: (Date | null)[][] = [];
-        let week: (Date | null)[] = [];
-
-        for (let i = 0; i < start.getDay(); i++) week.push(null);
-        for (let d = 1; d <= end.getDate(); d++) {
-            week.push(new Date(base.getFullYear(), base.getMonth(), d));
-            if (week.length === 7) {
-                days.push(week);
-                week = [];
-            }
+        const days: Date[] = [];
+        for (let i = 1; i <= end.getDate(); i++) {
+            days.push(new Date(base.getFullYear(), base.getMonth(), i));
         }
-        if (week.length) days.push(week);
         return days;
     }
 
@@ -103,7 +95,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
         } else {
             if (!this.range.start || (this.range.start && this.range.end)) {
                 this.range = { start: iso, end: null };
-            } else {
+            } else if (!this.range.end) {
                 if (new Date(iso) < new Date(this.range.start)) {
                     this.range = { start: iso, end: this.range.start };
                 } else {
@@ -116,15 +108,21 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
         }
     }
 
+    onHover(date: Date | null) {
+        this.hoverDate = date ? date.toISOString().split('T')[0] : null;
+    }
+
     isSelected(date: Date): boolean {
-        const val = this.control.value;
-        return !this.rangeMode && val === date.toISOString().split('T')[0];
+        return !this.rangeMode && this.control.value === date.toISOString().split('T')[0];
     }
 
     isInRange(date: Date): boolean {
-        if (!this.range.start || !this.range.end) return false;
+        if (!this.range.start || (!this.range.end && !this.hoverDate)) return false;
+
         const d = date.toISOString().split('T')[0];
-        return d >= this.range.start && d <= this.range.end;
+        const start = this.range.start;
+        const end = this.range.end ?? this.hoverDate;
+        return d >= start! && d <= end!;
     }
 
     isStart(date: Date): boolean {
@@ -136,10 +134,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     }
 
     @HostListener('document:click', ['$event'])
-    handleClickOutside(event: Event) {
-        if (!this.eRef.nativeElement.contains(event.target)) {
-            this.isOpen = false;
-        }
+    handleOutsideClick(e: Event) {
+        if (!this.eRef.nativeElement.contains(e.target)) this.isOpen = false;
     }
 
     writeValue(value: any): void {
