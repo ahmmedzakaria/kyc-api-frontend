@@ -7,11 +7,12 @@ import {TextboxComponent} from "../../shared/components/textbox/textbox.componen
 import {ValidationMessageService} from "../../shared/services/validation-message.service";
 import {PasswordGroupComponent} from "../../shared/components/password-group/password-group.component";
 import {DatePickerComponent} from "../../shared/components/date-picker/date-picker.component";
+import {RadioGroupComponent} from "../../shared/components/radio-group/radio-group.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
@@ -35,6 +36,7 @@ export class DashboardComponent implements OnInit {
             mobile: [''],
             dateOfBirth: [''],
             travelPeriod: [''],
+            gender: [''],
             duration: this.fb.group({
                 start: [''],
                 end: ['']

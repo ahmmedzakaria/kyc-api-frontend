@@ -1,0 +1,25 @@
+<div class="radio-group mb-3" [ngClass]="[orientation, customClass]">
+    <label *ngIf="label" class="form-label fw-semibold">{{ label }}</label>
+
+    <div class="d-flex" [ngClass]="{ 'flex-column': orientation === 'vertical', 'flex-row': orientation === 'horizontal' }">
+        <div
+                class="form-check me-3"
+                *ngFor="let opt of options; trackBy: trackByValue"
+        >
+            <input
+                    class="form-check-input"
+                    type="radio"
+                    [id]="label + '-' + opt.value"
+                    [name]="label"
+                    [value]="opt.value"
+                    [checked]="opt.value === value"
+                    [disabled]="disabled"
+                    (change)="onSelect(opt.value)"
+            />
+            <label class="form-check-label" [for]="label + '-' + opt.value">{{ opt.label }}</label>
+        </div>
+    </div>
+
+    <small *ngIf="helpText && !errorMessage" class="text-muted">{{ helpText }}</small>
+    <div *ngIf="errorMessage" class="invalid-feedback d-block mt-1">{{ errorMessage }}</div>
+</div>

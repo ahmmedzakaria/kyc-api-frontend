@@ -80,6 +80,18 @@
                     [disablePast]="true">
             </app-date-picker>
 
+            <app-radio-group
+                    formControlName="gender"
+                    label="Gender"
+                    [options]="[
+      { label: 'Male', value: 'M' },
+      { label: 'Female', value: 'F' },
+      { label: 'Other', value: 'O' }
+    ]"
+                    orientation="horizontal"
+                    [required]="true">
+            </app-radio-group>
+
 <!--            <app-button label="Submit" variant="primary" (clicked)="submit()"></app-button>-->
             <app-button label="Register" icon="fa-solid fa-user-plus" variant="primary" (clicked)="submit()"></app-button>
 
