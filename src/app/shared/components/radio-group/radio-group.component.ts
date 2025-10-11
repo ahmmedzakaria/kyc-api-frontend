@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import {
     ControlValueAccessor,
     NG_VALUE_ACCESSOR,
@@ -30,38 +30,32 @@ import {
     ]
 })
 export class RadioGroupComponent implements ControlValueAccessor, Validator {
-    /** Group label */
+    /** Title or question */
     @Input() label = '';
 
-    /** Array of radio options (each { label, value }) */
-    @Input() options: { label: string; value: any }[] = [];
+    /** List of options */
+    @Input() options: { label: string; value: any; icon?: string }[] = [];
 
-    /** Layout orientation: horizontal | vertical */
-    @Input() orientation: 'horizontal' | 'vertical' = 'horizontal';
-
-    /** Required flag for validation */
+    /** Required validation */
     @Input() required = false;
 
-    /** Optional help / hint text */
+    /** Optional layout */
+    @Input() orientation: 'horizontal' | 'vertical' = 'horizontal';
+
+    /** Optional hint text */
     @Input() helpText?: string;
 
-    /** Optional custom class */
-    @Input() customClass = '';
+    /** Custom style variant */
+    @Input() variant: 'outline' | 'filled' | 'card' = 'outline';
 
     /** Current value */
-    value: any = null;
-
-    /** Track touched/disabled */
+    value: any;
     disabled = false;
-    touched = false;
-
-    /** Internal error message */
     errorMessage: string | null = null;
 
-    private onChange = (value: any) => {};
+    private onChange = (val: any) => {};
     private onTouched = () => {};
 
-    // ControlValueAccessor
     writeValue(value: any): void {
         this.value = value;
     }
@@ -78,20 +72,19 @@ export class RadioGroupComponent implements ControlValueAccessor, Validator {
         this.disabled = isDisabled;
     }
 
-    // Validation
     validate(): ValidationErrors | null {
-        if (this.required && (this.value === null || this.value === undefined || this.value === '')) {
-            this.errorMessage = `${this.label || 'Field'} is required`;
+        if (this.required && !this.value) {
+            this.errorMessage = `${this.label || 'This field'} is required.`;
             return { required: true };
         }
         this.errorMessage = null;
         return null;
     }
 
-    onSelect(optionValue: any) {
+    onSelect(value: any): void {
         if (this.disabled) return;
-        this.value = optionValue;
-        this.onChange(this.value);
+        this.value = value;
+        this.onChange(value);
         this.onTouched();
     }
 
