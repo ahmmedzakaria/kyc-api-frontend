@@ -1,25 +1,34 @@
-<div class="radio-group" [ngClass]="[orientation, variant]">
+<div class="radio-group" [ngClass]="layout" role="radiogroup" [attr.aria-label]="label">
     <label *ngIf="label" class="form-label fw-semibold mb-2">
         {{ label }}
         <span *ngIf="required" class="text-danger">*</span>
     </label>
 
-    <div class="radio-options d-flex flex-wrap" [ngClass]="{ 'flex-column': orientation === 'vertical' }">
+    <div
+            class="radio-options"
+            [ngStyle]="layout === 'grid' ? { 'grid-template-columns': 'repeat(' + columns + ', 1fr)' } : {}"
+    >
         <div
                 *ngFor="let opt of options; trackBy: trackByValue"
                 class="radio-option"
                 [class.selected]="value === opt.value"
                 [class.disabled]="disabled"
+                tabindex="0"
                 (click)="onSelect(opt.value)"
                 role="radio"
                 [attr.aria-checked]="value === opt.value"
-                tabindex="0"
+                [attr.aria-disabled]="disabled"
         >
-            <div class="icon-container" *ngIf="opt.icon">
+            <div class="icon" *ngIf="opt.icon">
                 <i [class]="opt.icon"></i>
             </div>
-            <div class="label-text">{{ opt.label }}</div>
-            <div class="radio-mark"></div>
+
+            <div class="info">
+                <span class="label">{{ opt.label }}</span>
+                <small class="desc" *ngIf="opt.description">{{ opt.description }}</small>
+            </div>
+
+            <div class="marker"></div>
         </div>
     </div>
 

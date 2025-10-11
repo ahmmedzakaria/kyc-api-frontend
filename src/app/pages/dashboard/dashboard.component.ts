@@ -29,6 +29,12 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit(): void {}
 
+    genderOptions = [
+        { label: 'Male', value: 'M', icon: 'fa-solid fa-mars' },
+        { label: 'Female', value: 'F', icon: 'fa-solid fa-venus' },
+        { label: 'Other', value: 'O', icon: 'fa-solid fa-genderless', description: 'Non-binary or prefer not to say' }
+    ];
+
     plans = [
         { label: 'Basic', value: 'BASIC', icon: 'fa-solid fa-leaf', description: 'For individuals starting out', badge: 'Free' },
         { label: 'Pro', value: 'PRO', icon: 'fa-solid fa-bolt', description: 'For professionals and teams', badge: 'Popular' },
@@ -43,7 +49,7 @@ export class DashboardComponent implements OnInit {
             mobile: [''],
             dateOfBirth: [''],
             travelPeriod: [''],
-            gender: [''],
+            gender: ['M', Validators.required],
             plan: ['', Validators.required],
             duration: this.fb.group({
                 start: [''],

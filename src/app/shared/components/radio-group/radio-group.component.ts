@@ -30,25 +30,13 @@ import {
     ]
 })
 export class RadioGroupComponent implements ControlValueAccessor, Validator {
-    /** Title or question */
     @Input() label = '';
-
-    /** List of options */
-    @Input() options: { label: string; value: any; icon?: string }[] = [];
-
-    /** Required validation */
+    @Input() options: { label: string; value: any; description?: string; icon?: string }[] = [];
     @Input() required = false;
-
-    /** Optional layout */
-    @Input() orientation: 'horizontal' | 'vertical' = 'horizontal';
-
-    /** Optional hint text */
     @Input() helpText?: string;
+    @Input() layout: 'horizontal' | 'vertical' | 'grid' = 'horizontal';
+    @Input() columns = 3;
 
-    /** Custom style variant */
-    @Input() variant: 'outline' | 'filled' | 'card' = 'outline';
-
-    /** Current value */
     value: any;
     disabled = false;
     errorMessage: string | null = null;
@@ -74,7 +62,7 @@ export class RadioGroupComponent implements ControlValueAccessor, Validator {
 
     validate(): ValidationErrors | null {
         if (this.required && !this.value) {
-            this.errorMessage = `${this.label || 'This field'} is required.`;
+            this.errorMessage = `${this.label || 'This field'} is required`;
             return { required: true };
         }
         this.errorMessage = null;
