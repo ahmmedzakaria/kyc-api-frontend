@@ -1,6 +1,25 @@
 .textbox-component {
-  .form-control {
-    transition: box-shadow 0.15s ease;
+  position: relative;
+
+  .btn-eye {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 1rem;
+    z-index: 5;
+
+    &:hover {
+      color: #0d6efd;
+    }
+  }
+
+  .form-floating .btn-eye {
+    top: 1rem;
   }
 
   .form-control:focus {
@@ -10,9 +29,5 @@
   .invalid-feedback {
     font-size: 0.875rem;
     color: #dc3545;
-  }
-
-  .form-floating > label {
-    color: #6c757d;
   }
 }

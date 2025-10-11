@@ -5,18 +5,16 @@ import {
     Output,
     EventEmitter,
     OnInit,
-    ChangeDetectionStrategy,
-    ElementRef,
-    HostListener
+    ChangeDetectionStrategy
 } from '@angular/core';
 import {
     ControlValueAccessor,
     NG_VALUE_ACCESSOR,
+    NG_VALIDATORS,
     FormControl,
     Validators,
     ValidatorFn,
-    ValidationErrors,
-    NG_VALIDATORS, ReactiveFormsModule
+    ValidationErrors, ReactiveFormsModule
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ValidationMessageService } from '../../services/validation-message.service';
@@ -55,14 +53,17 @@ export class TextboxComponent implements ControlValueAccessor, OnInit {
     @Input() onlyNumber = false;
     @Input() noSpecialChars = false;
     @Input() disabled = false;
+    @Input() toggleVisibility = false; // 👁️ NEW FEATURE
 
     @Output() valueChange = new EventEmitter<string>();
 
     control = new FormControl('');
+    showPassword = false; // 👁️ track toggle state
+
     private onChange: any = () => {};
     protected onTouched: any = () => {};
 
-    constructor(private messages: ValidationMessageService, private el: ElementRef) {}
+    constructor(private messages: ValidationMessageService) {}
 
     ngOnInit(): void {
         const validators: ValidatorFn[] = [];
@@ -81,23 +82,13 @@ export class TextboxComponent implements ControlValueAccessor, OnInit {
         });
     }
 
-    // Password validation rule
+    // password strength validation
     private passwordValidator(): ValidatorFn {
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         return (control) => {
             if (!control.value) return null;
             return regex.test(control.value) ? null : { passwordWeak: true };
         };
-    }
-
-    // Input filtering
-    @HostListener('input', ['$event'])
-    onInput(event: any) {
-        let val = event.target.value;
-        if (this.onlyNumber) val = val.replace(/[^0-9]/g, '');
-        if (this.noSpecialChars) val = val.replace(/[^a-zA-Z0-9\s]/g, '');
-        this.control.setValue(val, { emitEvent: false });
-        this.onChange(val);
     }
 
     writeValue(obj: any): void {
@@ -115,6 +106,15 @@ export class TextboxComponent implements ControlValueAccessor, OnInit {
 
     validate(): ValidationErrors | null {
         return this.control.errors;
+    }
+
+    togglePassword(): void {
+        this.showPassword = !this.showPassword;
+    }
+
+    get displayType(): string {
+        if (this.type !== 'password') return this.type;
+        return this.showPassword ? 'text' : 'password';
     }
 
     get hasError(): boolean {
