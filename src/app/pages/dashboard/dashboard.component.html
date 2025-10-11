@@ -92,6 +92,29 @@
                     [required]="true">
             </app-radio-group>
 
+            <h3>Checkbox and toggle Example</h3>
+            <app-checkbox
+                    formControlName="agreeTerms"
+                    label="Accept Terms & Conditions"
+                    description="You must agree before submitting."
+                    variant="default"
+                    [required]="true"
+            ></app-checkbox>
+            <app-checkbox
+                    formControlName="notifications"
+                    label="Enable Notifications"
+                    variant="switch"
+                    helpText="Get important updates instantly."
+            ></app-checkbox>
+
+            <app-checkbox
+                    formControlName="marketing"
+                    label="Join Marketing List"
+                    description="Receive product news and offers."
+                    variant="card"
+            ></app-checkbox>
+
+    <h3>Card Example</h3>
             <app-card-selector
                     formControlName="plan"
                     label="Choose Your Plan"

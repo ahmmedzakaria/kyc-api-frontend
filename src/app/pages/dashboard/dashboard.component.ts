@@ -9,11 +9,12 @@ import {PasswordGroupComponent} from "../../shared/components/password-group/pas
 import {DatePickerComponent} from "../../shared/components/date-picker/date-picker.component";
 import {RadioGroupComponent} from "../../shared/components/radio-group/radio-group.component";
 import {CardSelectorComponent} from "../../shared/components/card-selector/card-selector.component";
+import {CheckboxComponent} from "../../shared/components/checkbox/checkbox.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
@@ -51,10 +52,9 @@ export class DashboardComponent implements OnInit {
             travelPeriod: [''],
             gender: ['M', Validators.required],
             plan: ['', Validators.required],
-            duration: this.fb.group({
-                start: [''],
-                end: ['']
-            })
+            agreeTerms: [false, Validators.requiredTrue],
+            notifications: [true],
+            marketing: [false],
         });
 
         // to override default validation message
