@@ -33,7 +33,11 @@ export class DashboardComponent implements OnInit {
             email: [''],
             password: [''],
             mobile: [''],
-            dateOfBirth: ['', Validators.required],
+            dateOfBirth: [''],
+            duration: this.fb.group({
+                start: [''],
+                end: ['']
+            })
         });
 
         // to override default validation message

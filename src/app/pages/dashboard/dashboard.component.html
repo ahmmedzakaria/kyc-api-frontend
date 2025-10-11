@@ -64,11 +64,16 @@
             </app-textbox>
 
             <app-date-picker
-                    formControlName="dateOfBirth"
                     label="Date of Birth"
-                    [floating]="true"
+                    [rangeMode]="false"
                     [disableFuture]="true"
                     [required]="true">
+            </app-date-picker>
+
+            <app-date-picker
+                    label="Select Period"
+                    [rangeMode]="true"
+                    [disablePast]="true">
             </app-date-picker>
 
 <!--            <app-button label="Submit" variant="primary" (clicked)="submit()"></app-button>-->
