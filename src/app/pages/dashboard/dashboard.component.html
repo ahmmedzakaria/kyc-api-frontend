@@ -125,6 +125,16 @@
                     helpText="Use arrow keys or click to select your preferred plan.">
             </app-card-selector>
 
+            <h3>Textarea Example</h3>
+            <app-textarea
+                    formControlName="notes"
+                    label="Remarks"
+                    placeholder="Enter your remarks..."
+                    [maxLength]="250"
+                    [autoResize]="true"
+                    helpText="Please provide details about your request."
+                    [required]="true"
+            ></app-textarea>
 <!--            <app-button label="Submit" variant="primary" (clicked)="submit()"></app-button>-->
             <app-button label="Register" icon="fa-solid fa-user-plus" variant="primary" (clicked)="submit()"></app-button>
 

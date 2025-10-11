@@ -10,11 +10,12 @@ import {DatePickerComponent} from "../../shared/components/date-picker/date-pick
 import {RadioGroupComponent} from "../../shared/components/radio-group/radio-group.component";
 import {CardSelectorComponent} from "../../shared/components/card-selector/card-selector.component";
 import {CheckboxComponent} from "../../shared/components/checkbox/checkbox.component";
+import {TextareaComponent} from "../../shared/components/textarea/textarea.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent, TextareaComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
@@ -55,6 +56,7 @@ export class DashboardComponent implements OnInit {
             agreeTerms: [false, Validators.requiredTrue],
             notifications: [true],
             marketing: [false],
+            notes: ['', [Validators.required, Validators.maxLength(250)]],
         });
 
         // to override default validation message
