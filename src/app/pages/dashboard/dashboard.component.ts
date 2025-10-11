@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit {
             password: [''],
             mobile: [''],
             dateOfBirth: [''],
+            travelPeriod: [''],
             duration: this.fb.group({
                 start: [''],
                 end: ['']

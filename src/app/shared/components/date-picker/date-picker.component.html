@@ -1,43 +1,47 @@
-<div class="date-picker">
+<div class="date-picker mb-3">
     <div class="form-floating position-relative">
         <input
-                type="text"
                 class="form-control"
                 readonly
-                [value]="rangeMode ? (range.start && range.end ? range.start + ' → ' + range.end : '') : control.value"
+                [value]="rangeMode
+        ? (range.start && range.end ? range.start + ' → ' + range.end : '')
+        : control.value || ''"
                 (click)="toggleCalendar()"
         />
         <label>{{ label }}</label>
         <i *ngIf="showIcon" class="fa-solid fa-calendar-days calendar-icon" (click)="toggleCalendar()"></i>
     </div>
 
-    <!-- CALENDAR POPOVER -->
+    <!-- Popover Calendar -->
     <div class="calendar-popover" *ngIf="isOpen">
         <div class="calendar-header">
             <button class="btn btn-sm" (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
-            <span>{{ currentMonth | date:'MMMM yyyy' }}</span>
+            <span>{{ baseMonth | date: 'MMMM yyyy' }}</span>
             <button class="btn btn-sm" (click)="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
 
-        <div class="calendar-grid">
-            <div class="calendar-day header" *ngFor="let d of ['Su','Mo','Tu','We','Th','Fr','Sa']">{{ d }}</div>
-            <div
-                    *ngFor="let week of calendar"
-                    class="calendar-week"
-            >
-                <div
-                        *ngFor="let day of week"
-                        class="calendar-day"
-                        [ngClass]="{
-            'disabled': !day,
-            'selected': day && isSelected(day),
-            'in-range': day && isInRange(day),
-            'range-start': day && isStart(day),
-            'range-end': day && isEnd(day)
-          }"
-                        (click)="day && selectDate(day)"
-                >
-                    {{ day ? day.getDate() : '' }}
+        <div class="calendar-body">
+            <div class="month-container" *ngFor="let month of monthMatrix">
+                <div class="month-label">{{ month.label }}</div>
+                <div class="calendar-grid">
+                    <div class="calendar-day header" *ngFor="let d of ['Su','Mo','Tu','We','Th','Fr','Sa']">{{ d }}</div>
+
+                    <div *ngFor="let week of month.days" class="calendar-week">
+                        <div
+                                *ngFor="let day of week"
+                                class="calendar-day"
+                                [ngClass]="{
+                'disabled': !day,
+                'selected': day && isSelected(day),
+                'in-range': day && isInRange(day),
+                'range-start': day && isStart(day),
+                'range-end': day && isEnd(day)
+              }"
+                                (click)="day && selectDate(day)"
+                        >
+                            {{ day ? day.getDate() : '' }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

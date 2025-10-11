@@ -64,15 +64,19 @@
             </app-textbox>
 
             <app-date-picker
+                    formControlName="dateOfBirth"
                     label="Date of Birth"
                     [rangeMode]="false"
-                    [disableFuture]="true"
-                    [required]="true">
+                    [monthsToShow]="1"
+                    [disableFuture]="true">
             </app-date-picker>
 
+
             <app-date-picker
-                    label="Select Period"
+                    formControlName="travelPeriod"
+                    label="Travel Period"
                     [rangeMode]="true"
+                    [monthsToShow]="2"
                     [disablePast]="true">
             </app-date-picker>
 
