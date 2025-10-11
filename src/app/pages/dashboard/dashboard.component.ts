@@ -5,11 +5,12 @@ import {ButtonComponent} from "../../shared/components/button/button.component";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {TextboxComponent} from "../../shared/components/textbox/textbox.component";
 import {ValidationMessageService} from "../../shared/services/validation-message.service";
+import {PasswordGroupComponent} from "../../shared/components/password-group/password-group.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })

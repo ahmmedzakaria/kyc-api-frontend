@@ -43,14 +43,13 @@
             </app-textbox>
 
             <!-- Password -->
-            <app-textbox
+            <app-password-group
                     formControlName="password"
                     label="Password"
-                    icon="fa-solid fa-lock"
-                    type="password"
-                    [required]="true"
-                    [floating]="true">
-            </app-textbox>
+                    confirmLabel="Confirm Password"
+                    [floating]="true"
+                    [required]="true">
+            </app-password-group>
 
             <!-- Mobile -->
             <app-textbox
@@ -64,7 +63,9 @@
                     [floating]="true">
             </app-textbox>
 
-            <app-button label="Submit" variant="primary" (clicked)="submit()"></app-button>
+<!--            <app-button label="Submit" variant="primary" (clicked)="submit()"></app-button>-->
+            <app-button label="Register" icon="fa-solid fa-user-plus" variant="primary" (clicked)="submit()"></app-button>
+
         </form>
 
 
