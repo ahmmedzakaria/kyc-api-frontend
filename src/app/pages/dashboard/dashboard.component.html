@@ -19,6 +19,33 @@
         </a>
     </div>
     <div>
+        <!-- in parent component template -->
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <app-textbox
+                    formControlName="email"
+                    label="Email"
+                    placeholder="Enter email"
+                    icon="fa-solid fa-envelope"
+                    [email]="true"
+                    [required]="true"
+                    helpText="We'll never share your email."
+                    (enterPressed)="submit()"
+            ></app-textbox>
+
+            <app-textbox
+                    formControlName="username"
+                    label="Username"
+                    placeholder="Username"
+                    icon="fa-solid fa-user"
+                    [minLength]="3"
+                    [maxLength]="30"
+            ></app-textbox>
+
+            <app-button label="Save" (clicked)="submit()" variant="primary"></app-button>
+        </form>
+
+    </div>
+    <div>
         <h3 class="mb-4">Button Example</h3>
         <app-button
                 label="Save"

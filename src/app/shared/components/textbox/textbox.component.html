@@ -1,0 +1,35 @@
+<div class="form-group textbox-component">
+    <label *ngIf="label" class="form-label">{{ label }}</label>
+
+    <div class="input-group" [ngClass]="{'input-group-sm': size==='sm','input-group-lg': size==='lg'}">
+    <span *ngIf="icon" class="input-group-text icon-wrapper">
+      <i [class]="icon"></i>
+    </span>
+
+        <input
+                [type]="type"
+                class="form-control"
+                [ngClass]="{
+                        'is-invalid': hasError,
+                        'form-control-sm': size === 'sm',
+                        'form-control-lg': size === 'lg',
+                        'border-0': variant === 'outline'
+                      }"
+                [placeholder]="placeholder"
+                [readonly]="readonly"
+                [disabled]="disabled"
+                [formControl]="control"
+                (blur)="onBlur()"
+                (keydown)="onKeydown($event)"
+                [attr.aria-describedby]="helpText ? 'help-' + label : null"
+        />
+    </div>
+
+    <div *ngIf="helpText" id="{{ 'help-' + label }}" class="form-text text-muted">
+        {{ helpText }}
+    </div>
+
+    <div *ngIf="hasError" class="invalid-feedback d-block">
+        <div *ngFor="let msg of errorMessages">{{ msg }}</div>
+    </div>
+</div>
