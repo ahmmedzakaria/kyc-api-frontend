@@ -1,0 +1,5 @@
+<button [ngClass]="classes" (click)="onClick()" [disabled]="disabled || loading">
+    <i *ngIf="icon && !loading" [class]="icon" class="me-1"></i>
+    <span *ngIf="!loading">{{ label }}</span>
+    <span *ngIf="loading" class="spinner"></span>
+</button>
