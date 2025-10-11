@@ -8,11 +8,12 @@ import {ValidationMessageService} from "../../shared/services/validation-message
 import {PasswordGroupComponent} from "../../shared/components/password-group/password-group.component";
 import {DatePickerComponent} from "../../shared/components/date-picker/date-picker.component";
 import {RadioGroupComponent} from "../../shared/components/radio-group/radio-group.component";
+import {CardSelectorComponent} from "../../shared/components/card-selector/card-selector.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
@@ -28,6 +29,12 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit(): void {}
 
+    plans = [
+        { label: 'Basic', value: 'BASIC', icon: 'fa-solid fa-leaf', description: 'For individuals starting out', badge: 'Free' },
+        { label: 'Pro', value: 'PRO', icon: 'fa-solid fa-bolt', description: 'For professionals and teams', badge: 'Popular' },
+        //{ label: 'Enterprise', value: 'ENTERPRISE', icon: 'fa-solid fa-building', description: 'Advanced features & support' }
+    ];
+
     constructor(private fb: FormBuilder,private validationMessages: ValidationMessageService) {
         this.form = this.fb.group({
             username: [''],
@@ -37,6 +44,7 @@ export class DashboardComponent implements OnInit {
             dateOfBirth: [''],
             travelPeriod: [''],
             gender: [''],
+            plan: ['', Validators.required],
             duration: this.fb.group({
                 start: [''],
                 end: ['']

@@ -92,6 +92,16 @@
                     [required]="true">
             </app-radio-group>
 
+            <app-card-selector
+                    formControlName="plan"
+                    label="Choose Your Plan"
+                    [options]="plans"
+                    [columns]="3"
+                    [responsive]="true"
+                    [required]="true"
+                    helpText="Use arrow keys or click to select your preferred plan.">
+            </app-card-selector>
+
 <!--            <app-button label="Submit" variant="primary" (clicked)="submit()"></app-button>-->
             <app-button label="Register" icon="fa-solid fa-user-plus" variant="primary" (clicked)="submit()"></app-button>
 
