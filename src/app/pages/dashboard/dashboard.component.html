@@ -19,19 +19,36 @@
         </a>
     </div>
     <div>
+        <h3 class="mb-4">Button Example</h3>
         <app-button
                 label="Save"
-                icon="fa fa-save"
-                variant="success"
-                size="md"
-        ></app-button>
-
+                icon="fa-solid fa-save"
+        >
+        </app-button>
         <app-button
                 label="Delete"
                 icon="fa fa-trash"
                 variant="danger"
                 [loading]="false"
         ></app-button>
+
+
+        <app-button
+                label="Loading..."
+                variant="success"
+                [outline]="true"
+                size="sm"
+                [loading]="true">
+        </app-button>
+        <app-button
+                label="Submit Form"
+                icon="fa-solid fa-check"
+                variant="primary"
+                size="lg"
+                [block]="true"
+        >
+        </app-button>
+
 
     </div>
 </div>

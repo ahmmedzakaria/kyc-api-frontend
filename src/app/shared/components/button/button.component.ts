@@ -9,39 +9,53 @@ import { CommonModule } from '@angular/common';
     styleUrls: ['./button.component.scss']
 })
 export class ButtonComponent {
-    /** Button label text */
-    @Input() label: string = 'Button';
+    /** Button text */
+    @Input() label: string = '';
 
-    /** Optional icon class (e.g., 'fa fa-plus') */
+    /** Icon class e.g. 'fa-solid fa-plus' */
     @Input() icon?: string;
 
-    /** Type of button: primary, secondary, danger, success */
-    @Input() variant: 'primary' | 'secondary' | 'danger' | 'success' = 'primary';
+    /** Bootstrap variant */
+    @Input() variant:
+        | 'primary'
+        | 'secondary'
+        | 'success'
+        | 'danger'
+        | 'warning'
+        | 'info'
+        | 'light'
+        | 'dark' = 'primary';
 
-    /** Size of the button */
+    /** Size sm | md | lg */
     @Input() size: 'sm' | 'md' | 'lg' = 'md';
 
-    /** Whether the button is disabled */
-    @Input() disabled: boolean = false;
+    /** Disabled state */
+    @Input() disabled = false;
 
-    /** Show spinner while loading */
-    @Input() loading: boolean = false;
+    /** Loading spinner */
+    @Input() loading = false;
+
+    /** Outline style */
+    @Input() outline = false;
+
+    /** Full width button */
+    @Input() block = false;
+
+    /** Rounded corners */
+    @Input() rounded = true;
 
     /** Emits click event */
     @Output() clicked = new EventEmitter<void>();
 
-    onClick() {
-        if (!this.disabled && !this.loading) {
-            this.clicked.emit();
-        }
+    onClick(): void {
+        if (!this.disabled && !this.loading) this.clicked.emit();
     }
 
-    get classes() {
-        return [
-            'btn',
-            `btn-${this.variant}`,
-            `btn-${this.size}`,
-            this.disabled ? 'btn-disabled' : ''
-        ].join(' ');
+    get classes(): string {
+        const btnType = this.outline ? `btn-outline-${this.variant}` : `btn-${this.variant}`;
+        const sizeClass = this.size !== 'md' ? `btn-${this.size}` : '';
+        const blockClass = this.block ? 'w-100' : '';
+        const roundClass = this.rounded ? 'rounded-pill' : '';
+        return ['btn', btnType, sizeClass, blockClass, roundClass].join(' ').trim();
     }
 }
