@@ -1,7 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    Output,
+    ViewChild
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Subject, of } from 'rxjs';
+import {CdkVirtualScrollViewport, ScrollingModule} from '@angular/cdk/scrolling';
+import {Subject, of, throttleTime} from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import {GisService} from "../../core/services/gis.service";
 
@@ -13,7 +22,7 @@ interface LocationItem {
 @Component({
     selector: 'app-location-dropdown',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, ScrollingModule],
     templateUrl: './location-dropdown.component.html',
     styleUrls: ['./location-dropdown.component.scss']
 })
@@ -22,6 +31,8 @@ export class LocationDropdownComponent {
     @Output() locationSelected = new EventEmitter<LocationItem | null>();
 
     @ViewChild('dropdownList') dropdownList!: ElementRef<HTMLDivElement>;
+    @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
+
 
     searchTerm = '';
     locations: LocationItem[] = [];
@@ -34,33 +45,35 @@ export class LocationDropdownComponent {
 
     private search$ = new Subject<string>();
 
-    constructor(private gisService: GisService) {
+    constructor(private gisService: GisService, private eRef: ElementRef) {
         this.setupSearch();
     }
 
     private setupSearch() {
-        this.search$.pipe(
-            debounceTime(400),
-            distinctUntilChanged(),
-            tap(() => {
-                this.page = 0;
-                this.locations = [];
-                this.isLoading = true;
-            }),
-            switchMap(term => {
-                if (!term.trim()) return of({ content: [], totalPages: 0 });
-                return this.gisService.searchLocation(term, this.page, 10);
-            }),
-            tap(() => (this.isLoading = false))
-        ).subscribe({
-            next: (res) => {
-                this.locations = res?.content ?? [];
-                this.totalPages = res?.totalPages ?? 0;
-                this.isDropdownOpen = true;
-                this.highlightedIndex = -1;
-            },
-            error: () => (this.isLoading = false)
-        });
+        this.search$
+            .pipe(
+                debounceTime(400),
+                distinctUntilChanged(),
+                tap(() => {
+                    this.page = 0;
+                    this.locations = [];
+                    this.isLoading = true;
+                }),
+                switchMap((term) => {
+                    if (!term.trim()) return of({ content: [], totalPages: 0 });
+                    return this.gisService.searchLocation(term, this.page, 10);
+                }),
+                tap(() => (this.isLoading = false))
+            )
+            .subscribe({
+                next: (res) => {
+                    this.locations = res?.content ?? [];
+                    this.totalPages = res?.totalPages ?? 0;
+                    this.isDropdownOpen = true;
+                    this.highlightedIndex = -1;
+                },
+                error: () => (this.isLoading = false),
+            });
     }
 
     onSearch(term: string): void {
@@ -68,9 +81,9 @@ export class LocationDropdownComponent {
         this.search$.next(term);
     }
 
-    onScroll(e: Event): void {
-        const el = e.target as HTMLElement;
-        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 10;
+    onScroll(event: Event): void {
+        const element = event.target as HTMLElement;
+        const atBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 10;
 
         if (atBottom && !this.isLoading && this.page + 1 < this.totalPages) {
             this.page++;
@@ -121,17 +134,13 @@ export class LocationDropdownComponent {
     private scrollToHighlighted(): void {
         const listEl = this.dropdownList?.nativeElement;
         if (!listEl) return;
-
         const activeEl = listEl.children[this.highlightedIndex] as HTMLElement;
         if (activeEl) {
             const top = activeEl.offsetTop;
             const bottom = top + activeEl.offsetHeight;
-
-            if (top < listEl.scrollTop) {
-                listEl.scrollTop = top;
-            } else if (bottom > listEl.scrollTop + listEl.clientHeight) {
+            if (top < listEl.scrollTop) listEl.scrollTop = top;
+            else if (bottom > listEl.scrollTop + listEl.clientHeight)
                 listEl.scrollTop = bottom - listEl.clientHeight;
-            }
         }
     }
 
@@ -143,5 +152,36 @@ export class LocationDropdownComponent {
 
     private escapeRegex(value: string): string {
         return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    /** Hide dropdown on click outside */
+    @HostListener('document:click', ['$event'])
+    onClickOutside(event: Event) {
+        if (!this.eRef.nativeElement.contains(event.target)) {
+            this.isDropdownOpen = false;
+        }
+    }
+
+    ngAfterViewInit() {
+        this.viewport.elementScrolled()
+            .pipe(throttleTime(200))
+            .subscribe(() => {
+                const end = this.viewport.measureScrollOffset('bottom') < 50;
+                if (end && !this.isLoading && this.page + 1 < this.totalPages) {
+                    this.loadMore();
+                }
+            });
+    }
+
+    private loadMore() {
+        this.page++;
+        this.isLoading = true;
+        this.gisService.searchLocation(this.searchTerm, this.page, 10).subscribe({
+            next: (res) => {
+                this.locations.push(...(res?.content ?? []));
+                this.isLoading = false;
+            },
+            error: () => (this.isLoading = false),
+        });
     }
 }

@@ -12,21 +12,20 @@
         <button *ngIf="selectedLocation" class="clear-btn" (click)="clearSelection()">✕</button>
     </div>
 
-    <div
-        #dropdownList
-        class="dropdown-list"
-        *ngIf="isDropdownOpen"
-        (scroll)="onScroll($event)"
-    >
+    <div class="dropdown-list" *ngIf="isDropdownOpen">
         <div *ngIf="isLoading" class="loading">Loading...</div>
 
-        <div
-                *ngFor="let loc of locations; let i = index"
-                class="dropdown-item"
-                [class.highlighted]="i === highlightedIndex"
-                (click)="selectLocation(loc)"
-                [innerHTML]="highlightMatch(loc.detailLocation)"
-        ></div>
+        <cdk-virtual-scroll-viewport itemSize="40" class="virtual-list">
+            <div
+                    *cdkVirtualFor="let loc of locations; let i = index"
+                    class="dropdown-item"
+                    [class.highlighted]="i === highlightedIndex"
+                    (click)="selectLocation(loc)"
+                    [innerHTML]="highlightMatch(loc.detailLocation)"
+            ></div>
+        </cdk-virtual-scroll-viewport>
+
+
 
         <div *ngIf="!isLoading && locations.length === 0" class="no-results">
             No results found
