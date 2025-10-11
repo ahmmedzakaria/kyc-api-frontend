@@ -5,25 +5,26 @@ import {
     Output,
     EventEmitter,
     OnInit,
-    ChangeDetectionStrategy
+    ChangeDetectionStrategy,
+    ElementRef,
+    HostListener
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
     ControlValueAccessor,
     NG_VALUE_ACCESSOR,
-    FormsModule,
-    ReactiveFormsModule,
+    FormControl,
     Validators,
     ValidatorFn,
-    AbstractControl,
     ValidationErrors,
-    FormControl
+    NG_VALIDATORS, ReactiveFormsModule
 } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ValidationMessageService } from '../../services/validation-message.service';
 
 @Component({
     selector: 'app-textbox',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './textbox.component.html',
     styleUrls: ['./textbox.component.scss'],
     providers: [
@@ -31,63 +32,76 @@ import {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => TextboxComponent),
             multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => TextboxComponent),
+            multi: true
         }
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TextboxComponent implements ControlValueAccessor, OnInit {
-    // appearance
-    @Input() label?: string;
+    @Input() label = '';
     @Input() placeholder = '';
-    @Input() helpText?: string;
-    @Input() icon?: string; // e.g., 'fa-solid fa-user'
-    @Input() size: 'sm' | 'md' | 'lg' = 'md';
-    @Input() variant: 'default' | 'outline' = 'default';
-    @Input() readonly = false;
-    @Input() disabled = false;
-    @Input() type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'date' = 'text';
-
-    // validators
+    @Input() type: 'text' | 'email' | 'password' | 'tel' | 'number' = 'text';
     @Input() required = false;
     @Input() minLength?: number;
     @Input() maxLength?: number;
     @Input() pattern?: string;
-    @Input() email = false;
+    @Input() icon?: string;
+    @Input() serverErrors: string[] = [];
+    @Input() floating = false;
+    @Input() onlyNumber = false;
+    @Input() noSpecialChars = false;
+    @Input() disabled = false;
 
-    // outputs
     @Output() valueChange = new EventEmitter<string>();
-    @Output() enterPressed = new EventEmitter<void>();
 
-    // internal control to manage validation & UI
     control = new FormControl('');
+    private onChange: any = () => {};
+    protected onTouched: any = () => {};
 
-    // ControlValueAccessor callbacks
-    private onChange: (v: any) => void = () => {};
-    private onTouched: () => void = () => {};
+    constructor(private messages: ValidationMessageService, private el: ElementRef) {}
 
     ngOnInit(): void {
-        // build validators
         const validators: ValidatorFn[] = [];
         if (this.required) validators.push(Validators.required);
-        if (this.email) validators.push(Validators.email);
-        if (this.minLength !== undefined) validators.push(Validators.minLength(this.minLength));
-        if (this.maxLength !== undefined) validators.push(Validators.maxLength(this.maxLength));
+        if (this.minLength) validators.push(Validators.minLength(this.minLength));
+        if (this.maxLength) validators.push(Validators.maxLength(this.maxLength));
         if (this.pattern) validators.push(Validators.pattern(this.pattern));
+        if (this.type === 'email') validators.push(Validators.email);
+        if (this.type === 'password') validators.push(this.passwordValidator());
 
         this.control.setValidators(validators);
 
-        // propagate internal changes outwards
-        this.control.valueChanges.subscribe((v: any) => {
-            // keep value as string for consistent behaviour; for number/date parent can parse
-            const value = v === null || v === undefined ? '' : v;
-            this.onChange(value);
-            this.valueChange.emit(value);
+        this.control.valueChanges.subscribe((val) => {
+            this.onChange(val);
+            this.valueChange.emit(val??undefined);
         });
     }
 
-    // ControlValueAccessor implementation
+    // Password validation rule
+    private passwordValidator(): ValidatorFn {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return (control) => {
+            if (!control.value) return null;
+            return regex.test(control.value) ? null : { passwordWeak: true };
+        };
+    }
+
+    // Input filtering
+    @HostListener('input', ['$event'])
+    onInput(event: any) {
+        let val = event.target.value;
+        if (this.onlyNumber) val = val.replace(/[^0-9]/g, '');
+        if (this.noSpecialChars) val = val.replace(/[^a-zA-Z0-9\s]/g, '');
+        this.control.setValue(val, { emitEvent: false });
+        this.onChange(val);
+    }
+
     writeValue(obj: any): void {
-        this.control.setValue(obj ?? '', { emitEvent: false });
+        this.control.setValue(obj, { emitEvent: false });
     }
     registerOnChange(fn: any): void {
         this.onChange = fn;
@@ -97,41 +111,18 @@ export class TextboxComponent implements ControlValueAccessor, OnInit {
     }
     setDisabledState(isDisabled: boolean): void {
         this.disabled = isDisabled;
-        isDisabled ? this.control.disable({ emitEvent: false }) : this.control.enable({ emitEvent: false });
     }
 
-    // helpers for template
+    validate(): ValidationErrors | null {
+        return this.control.errors;
+    }
+
     get hasError(): boolean {
-        return this.control.invalid && (this.control.touched || this.control.dirty);
+        return this.control.invalid && (this.control.touched || this.serverErrors.length > 0);
     }
 
     get errorMessages(): string[] {
-        const errs: ValidationErrors | null = this.control.errors;
-        if (!errs) return [];
-        const messages: string[] = [];
-        if (errs['required']) messages.push('This field is required.');
-        if (errs['email']) messages.push('Please enter a valid email address.');
-        if (errs['minlength']) {
-            const r = errs['minlength'];
-            messages.push(`Minimum ${r.requiredLength} characters required.`);
-        }
-        if (errs['maxlength']) {
-            const r = errs['maxlength'];
-            messages.push(`Maximum ${r.requiredLength} characters allowed.`);
-        }
-        if (errs['pattern']) messages.push('The value does not match the expected pattern.');
-        return messages;
-    }
-
-    // UI events
-    onBlur() {
-        this.onTouched();
-        this.control.markAsTouched();
-    }
-
-    onKeydown(event: KeyboardEvent) {
-        if (event.key === 'Enter') {
-            this.enterPressed.emit();
-        }
+        const msgs = this.messages.buildMessages(this.control.errors);
+        return [...msgs, ...this.serverErrors];
     }
 }

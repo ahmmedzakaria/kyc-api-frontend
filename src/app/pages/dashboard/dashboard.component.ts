@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import {ButtonComponent} from "../../shared/components/button/button.component";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {TextboxComponent} from "../../shared/components/textbox/textbox.component";
+import {ValidationMessageService} from "../../shared/services/validation-message.service";
 
 @Component({
     selector: 'app-dashboard',
@@ -24,10 +25,18 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit(): void {}
 
-    constructor(private fb: FormBuilder) {
+    constructor(private fb: FormBuilder,private validationMessages: ValidationMessageService) {
         this.form = this.fb.group({
+            username: [''],
             email: [''],
-            username: ['']
+            password: [''],
+            mobile: ['']
+        });
+
+        // to override default validation message
+        this.validationMessages.setMessages({
+            required: 'You must fill out this field.',
+            passwordWeak: 'Your password is not strong enough.'
         });
     }
 
