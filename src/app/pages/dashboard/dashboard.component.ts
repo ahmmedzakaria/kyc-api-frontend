@@ -11,11 +11,12 @@ import {RadioGroupComponent} from "../../shared/components/radio-group/radio-gro
 import {CardSelectorComponent} from "../../shared/components/card-selector/card-selector.component";
 import {CheckboxComponent} from "../../shared/components/checkbox/checkbox.component";
 import {TextareaComponent} from "../../shared/components/textarea/textarea.component";
+import {DropdownComponent} from "../../shared/components/dropdown/dropdown.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent, TextareaComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent, TextareaComponent, DropdownComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
@@ -36,6 +37,12 @@ export class DashboardComponent implements OnInit {
         { label: 'Female', value: 'F', icon: 'fa-solid fa-venus' },
         { label: 'Other', value: 'O', icon: 'fa-solid fa-genderless', description: 'Non-binary or prefer not to say' }
     ];
+    countries = [
+        { label: 'Bangladesh', value: 'BD', icon: 'fa-solid fa-flag' },
+        { label: 'India', value: 'IN', icon: 'fa-solid fa-flag' },
+        { label: 'United States', value: 'US', icon: 'fa-solid fa-flag' },
+        { label: 'Germany', value: 'DE', icon: 'fa-solid fa-flag' },
+    ];
 
     plans = [
         { label: 'Basic', value: 'BASIC', icon: 'fa-solid fa-leaf', description: 'For individuals starting out', badge: 'Free' },
@@ -50,6 +57,7 @@ export class DashboardComponent implements OnInit {
             password: [''],
             mobile: [''],
             dateOfBirth: [''],
+            country: ['', Validators.required],
             travelPeriod: [''],
             gender: ['M', Validators.required],
             plan: ['', Validators.required],

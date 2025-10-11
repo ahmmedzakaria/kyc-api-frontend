@@ -79,7 +79,15 @@
                     [monthsToShow]="2"
                     [disablePast]="true">
             </app-date-picker>
-
+            <app-dropdown
+                    formControlName="country"
+                    label="Country"
+                    [options]="countries"
+                    [searchable]="true"
+                    placeholder="Select your country"
+                    [required]="true"
+                    helpText="Choose your country of residence."
+            ></app-dropdown>
             <app-radio-group
                     formControlName="gender"
                     label="Gender"
