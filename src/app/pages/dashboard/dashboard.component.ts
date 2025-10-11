@@ -35,10 +35,10 @@ export class DashboardComponent implements OnInit {
         });
 
         // to override default validation message
-        this.validationMessages.setMessages({
-            required: 'You must fill out this field.',
-            passwordWeak: 'Your password is not strong enough.'
-        });
+        // this.validationMessages.setMessages({
+        //     required: 'You must fill out this field.',
+        //     passwordWeak: 'Your password is not strong enough.'
+        // });
     }
 
     submit() {

@@ -1,14 +1,21 @@
-import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+    Component,
+    EventEmitter,
+    forwardRef,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
+import {
+    AbstractControl,
     ControlValueAccessor,
     FormBuilder,
     FormGroup,
     NG_VALIDATORS,
-    NG_VALUE_ACCESSOR,
+    NG_VALUE_ACCESSOR, ReactiveFormsModule,
     ValidationErrors,
-    Validators,
-    AbstractControl
+    Validators
 } from '@angular/forms';
 import { TextboxComponent } from '../textbox/textbox.component';
 import { ValidationMessageService } from '../../services/validation-message.service';
@@ -16,7 +23,7 @@ import { ValidationMessageService } from '../../services/validation-message.serv
 @Component({
     selector: 'app-password-group',
     standalone: true,
-    imports: [CommonModule, TextboxComponent],
+    imports: [CommonModule, TextboxComponent, ReactiveFormsModule],
     templateUrl: './password-group.component.html',
     styleUrls: ['./password-group.component.scss'],
     providers: [
@@ -37,11 +44,13 @@ export class PasswordGroupComponent implements ControlValueAccessor, OnInit {
     @Input() confirmLabel = 'Confirm Password';
     @Input() required = true;
     @Input() floating = true;
-    @Input() disabled = false;
     @Input() showStrength = true;
+    @Input() disabled = false;
+
     @Output() valueChange = new EventEmitter<string>();
 
     form!: FormGroup;
+    showHints = false; // show tooltip panel
 
     private onChange = (value: any) => {};
     private onTouched = () => {};
@@ -99,16 +108,16 @@ export class PasswordGroupComponent implements ControlValueAccessor, OnInit {
         return this.form.valid ? null : { invalid: true };
     }
 
-    // ✅ Password must contain uppercase, lowercase, number, special char
+    // ---------------- Password validation helpers ----------------
+
     private passwordStrengthValidator() {
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
         return (control: AbstractControl) => {
             if (!control.value) return null;
             return regex.test(control.value) ? null : { passwordWeak: true };
         };
     }
 
-    // ✅ Confirm password must match
     private matchPasswordsValidator() {
         return (group: AbstractControl): ValidationErrors | null => {
             const pass = group.get('password')?.value;
@@ -116,6 +125,8 @@ export class PasswordGroupComponent implements ControlValueAccessor, OnInit {
             return pass && confirm && pass !== confirm ? { mismatch: true } : null;
         };
     }
+
+    // ---------------- Strength logic ----------------
 
     get passwordControl() {
         return this.form.get('password');
@@ -129,17 +140,45 @@ export class PasswordGroupComponent implements ControlValueAccessor, OnInit {
         return this.form.hasError('mismatch') && this.confirmControl?.touched!;
     }
 
-    get passwordStrengthClass(): string {
+    get passwordCriteria() {
         const val = this.passwordControl?.value || '';
-        if (val.length < 8) return 'weak';
-        const hasUpper = /[A-Z]/.test(val);
-        const hasLower = /[a-z]/.test(val);
-        const hasNumber = /\d/.test(val);
-        const hasSpecial = /[@$!%*?&]/.test(val);
-        const score = [hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+        return {
+            length: val.length >= 8,
+            upper: /[A-Z]/.test(val),
+            lower: /[a-z]/.test(val),
+            number: /\d/.test(val),
+            special: /[@$!%*?&]/.test(val)
+        };
+    }
 
-        if (score <= 2) return 'weak';
-        if (score === 3) return 'medium';
-        return 'strong';
+    get passwordScore(): number {
+        const c = this.passwordCriteria;
+        return [c.length, c.upper, c.lower, c.number, c.special].filter(Boolean).length;
+    }
+
+    get strengthPercent(): number {
+        return (this.passwordScore / 5) * 100;
+    }
+
+    get strengthLabel(): string {
+        if (this.passwordScore <= 2) return 'Weak';
+        if (this.passwordScore <= 4) return 'Medium';
+        return 'Strong';
+    }
+
+    get missingHints(): string[] {
+        const c = this.passwordCriteria;
+        const hints: string[] = [];
+        if (!c.length) hints.push('Use at least 8 characters');
+        if (!c.upper) hints.push('Add an uppercase letter');
+        if (!c.lower) hints.push('Add a lowercase letter');
+        if (!c.number) hints.push('Add a number');
+        if (!c.special) hints.push('Add a special character (@, #, !, etc.)');
+        return hints;
+    }
+
+    // tooltip visibility
+    toggleHints(show: boolean) {
+        this.showHints = show;
     }
 }
