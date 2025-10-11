@@ -1,0 +1,25 @@
+.date-picker {
+  position: relative;
+
+  .calendar-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+  }
+
+  .form-floating input {
+    padding-right: 2.5rem;
+  }
+
+  .input-group-text {
+    background: #f8f9fa;
+    border-left: none;
+  }
+
+  .invalid-feedback {
+    font-size: 0.85rem;
+  }
+}

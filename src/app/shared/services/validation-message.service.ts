@@ -37,4 +37,17 @@ export class ValidationMessageService {
         if (!errors) return [];
         return Object.keys(errors).map(key => this.getMessage(key, errors[key]));
     }
+
+    private messages: Record<string, string> = {
+        required: '{label} is required',
+    };
+
+    get(key: string, label?: string): string {
+        const msg = this.messages[key] || 'Invalid value';
+        return msg.replace('{label}', label ?? '');
+    }
+
+    setCustomMessage(key: string, message: string) {
+        this.messages[key] = message;
+    }
 }

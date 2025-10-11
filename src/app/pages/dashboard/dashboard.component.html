@@ -63,6 +63,14 @@
                     [floating]="true">
             </app-textbox>
 
+            <app-date-picker
+                    formControlName="dateOfBirth"
+                    label="Date of Birth"
+                    [floating]="true"
+                    [disableFuture]="true"
+                    [required]="true">
+            </app-date-picker>
+
 <!--            <app-button label="Submit" variant="primary" (clicked)="submit()"></app-button>-->
             <app-button label="Register" icon="fa-solid fa-user-plus" variant="primary" (clicked)="submit()"></app-button>
 

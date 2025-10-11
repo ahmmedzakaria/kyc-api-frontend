@@ -2,15 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {ButtonComponent} from "../../shared/components/button/button.component";
-import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {TextboxComponent} from "../../shared/components/textbox/textbox.component";
 import {ValidationMessageService} from "../../shared/services/validation-message.service";
 import {PasswordGroupComponent} from "../../shared/components/password-group/password-group.component";
+import {DatePickerComponent} from "../../shared/components/date-picker/date-picker.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
@@ -31,7 +32,8 @@ export class DashboardComponent implements OnInit {
             username: [''],
             email: [''],
             password: [''],
-            mobile: ['']
+            mobile: [''],
+            dateOfBirth: ['', Validators.required],
         });
 
         // to override default validation message

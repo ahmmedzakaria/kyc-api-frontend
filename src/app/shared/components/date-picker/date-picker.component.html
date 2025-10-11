@@ -1,0 +1,39 @@
+<div class="date-picker">
+    <div class="form-floating" *ngIf="floating; else normal">
+        <input
+                type="date"
+                class="form-control"
+                [value]="value || ''"
+                [min]="minDate"
+                [max]="maxDate"
+                [disabled]="disabled"
+                [required]="required"
+                (input)="onDateInput($event)"
+                (blur)="onTouched()"
+        />
+        <label>{{ label }}</label>
+        <i *ngIf="showIcon" class="fa-solid fa-calendar-days calendar-icon"></i>
+    </div>
+
+    <ng-template #normal>
+        <label class="form-label">{{ label }}</label>
+        <div class="input-group">
+            <input
+                    type="date"
+                    class="form-control"
+                    [value]="value || ''"
+                    [min]="minDate"
+                    [max]="maxDate"
+                    [disabled]="disabled"
+                    [required]="required"
+                    (input)="onDateInput($event)"
+                    (blur)="onTouched()"
+            />
+            <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+        </div>
+    </ng-template>
+
+    <div *ngIf="errorMessage" class="invalid-feedback d-block mt-1">
+        {{ errorMessage }}
+    </div>
+</div>
