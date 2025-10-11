@@ -60,11 +60,11 @@ export class PersonListComponent implements OnInit {
             });
     }
 
-    populateData(res: any) {
-        this.persons = res.data?.content || [];
-        this.totalElements = res.data?.totalElements || 0;
-        this.totalPages = res.data?.totalPages || 0;
-        this.currentPage = res.data?.number || 0;
+    populateData(data: any) {
+        this.persons = data?.content || [];
+        this.totalElements = data?.totalElements || 0;
+        this.totalPages = data?.totalPages || 0;
+        this.currentPage = data?.number || 0;
     }
 
     onSaved() {

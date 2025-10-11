@@ -17,7 +17,7 @@ export class PersonService {
     }
 
     searchPersons(searchText: string = '', page: number = 0, size: number = 10): Observable<any> {
-        const body = { q: searchText, page, size };
+        const body = { searchText: searchText, page, size };
         return this.api.post(ApiEndpoints.PERSON_SEARCH, body);
     }
 
