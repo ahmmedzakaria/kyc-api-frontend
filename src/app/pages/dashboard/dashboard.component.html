@@ -88,6 +88,36 @@
                     [required]="true"
                     helpText="Choose your country of residence."
             ></app-dropdown>
+
+            <app-smart-dropdown
+                    label="Gender"
+                    mode="static"
+                    [searchable]="true"
+                    placeholder="Select your country"
+                    [options]="[
+    { label: 'Male', value: 'M' },
+    { label: 'Female', value: 'F' }
+  ]"
+                    formControlName="genderDropDown">
+            </app-smart-dropdown>
+
+            <app-smart-dropdown
+                    label="District"
+                    mode="api-simple"
+                    apiUrl="http://localhost:9100/api/locations/search"
+                    [requestBody]="{ searchText: '', page: 0, size: 10, source: 'KYC_APP' }"
+                    formControlName="district">
+            </app-smart-dropdown>
+
+             <app-smart-dropdown
+                     label="Village"
+                     mode="api-scroll"
+                     apiUrl="http://localhost:9100/api/locations/search"
+                     [requestBody]="{ searchText: '', page: 0, size: 10, source: 'KYC_APP' }"
+                     [pageSize]="20"
+                     formControlName="village">
+             </app-smart-dropdown>
+
             <app-radio-group
                     formControlName="gender"
                     label="Gender"

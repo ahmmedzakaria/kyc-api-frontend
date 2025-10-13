@@ -12,11 +12,13 @@ import {CardSelectorComponent} from "../../shared/components/card-selector/card-
 import {CheckboxComponent} from "../../shared/components/checkbox/checkbox.component";
 import {TextareaComponent} from "../../shared/components/textarea/textarea.component";
 import {DropdownComponent} from "../../shared/components/dropdown/dropdown.component";
+import {SmartDropdownComponent} from "../../shared/components/smart-dropdown/smart-dropdown.component";
+import {ScrollableDropdownComponent} from "../../shared/components/scrollable-dropdown/scrollable-dropdown.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent, TextareaComponent, DropdownComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent, TextareaComponent, DropdownComponent, SmartDropdownComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
@@ -49,6 +51,7 @@ export class DashboardComponent implements OnInit {
         { label: 'Pro', value: 'PRO', icon: 'fa-solid fa-bolt', description: 'For professionals and teams', badge: 'Popular' },
         //{ label: 'Enterprise', value: 'ENTERPRISE', icon: 'fa-solid fa-building', description: 'Advanced features & support' }
     ];
+    apiUrl = "http://localhost:9100/api/locations/search"
 
     constructor(private fb: FormBuilder,private validationMessages: ValidationMessageService) {
         this.form = this.fb.group({
@@ -59,6 +62,9 @@ export class DashboardComponent implements OnInit {
             dateOfBirth: [''],
             country: ['', Validators.required],
             travelPeriod: [''],
+            genderDropDown: [''],
+            district: [''],
+            village: [''],
             gender: ['M', Validators.required],
             plan: ['', Validators.required],
             agreeTerms: [false, Validators.requiredTrue],
