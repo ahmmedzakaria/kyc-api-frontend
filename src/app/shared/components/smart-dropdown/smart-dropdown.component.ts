@@ -96,7 +96,6 @@ export class SmartDropdownComponent implements OnInit, ControlValueAccessor, Val
         if (!this.apiUrl) return of([]);
         this.loading = true;
         const body = { searchText: term, page: this.page, size: this.pageSize, source: 'KYC_APP' };
-
         return this.http.post<any>(this.apiUrl, body).pipe(
             tap(res => {
                 const content = res?.content ?? res ?? [];
@@ -104,7 +103,7 @@ export class SmartDropdownComponent implements OnInit, ControlValueAccessor, Val
                     label: c.detailLocation ?? c.label ?? 'Unnamed',
                     value: c.id
                 }))];
-                this.totalPages = res?.data?.totalPages ?? 1;
+                this.totalPages = res?.totalPages ?? 1;
                 this.loading = false;
             })
         );
@@ -152,7 +151,6 @@ export class SmartDropdownComponent implements OnInit, ControlValueAccessor, Val
     }
 
     onScroll(): void {
-        console.log('scroll')
         if (this.mode !== 'api-scroll' || this.loading || this.page >= this.totalPages - 1) return;
         const el = this.scrollContainer.nativeElement;
         const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 100;
