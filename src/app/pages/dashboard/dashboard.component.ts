@@ -14,11 +14,12 @@ import {TextareaComponent} from "../../shared/components/textarea/textarea.compo
 import {DropdownComponent} from "../../shared/components/dropdown/dropdown.component";
 import {SmartDropdownComponent} from "../../shared/components/smart-dropdown/smart-dropdown.component";
 import {ScrollableDropdownComponent} from "../../shared/components/scrollable-dropdown/scrollable-dropdown.component";
+import {FileUploadComponent} from "../../shared/components/file-upload/file-upload.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent, TextareaComponent, DropdownComponent, SmartDropdownComponent],
+    imports: [CommonModule, RouterLink, ButtonComponent, ReactiveFormsModule, TextboxComponent, PasswordGroupComponent, DatePickerComponent, RadioGroupComponent, CardSelectorComponent, CheckboxComponent, TextareaComponent, DropdownComponent, SmartDropdownComponent, FileUploadComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
@@ -71,6 +72,7 @@ export class DashboardComponent implements OnInit {
             notifications: [true],
             marketing: [false],
             notes: ['', [Validators.required, Validators.maxLength(250)]],
+            photo: [null],
         });
 
         // to override default validation message

@@ -1,0 +1,44 @@
+<div class="file-upload">
+    <label class="form-label fw-semibold">{{ label }}</label>
+
+    <div
+            class="upload-area"
+            (drop)="onDrop($event)"
+            (dragover)="onDragOver($event)"
+            tabindex="0"
+    >
+        <i class="fa-solid fa-cloud-arrow-up fa-2x text-primary mb-2"></i>
+        <p class="text-muted mb-1">{{ hint }}</p>
+        <small *ngIf="accept !== '*/*'" class="text-secondary">Accepted: {{ accept }}</small>
+        <input
+                type="file"
+                [attr.accept]="accept"
+                [attr.multiple]="multiple ? true : null"
+                (change)="onFileSelected($event)"
+        />
+    </div>
+
+    <div class="error text-danger mt-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <!-- Previews -->
+    <div class="preview-list mt-3" *ngIf="showPreview && files.length > 0">
+        <div
+                class="preview-item"
+                *ngFor="let file of files; let i = index"
+        >
+            <img
+                    *ngIf="file.type.startsWith('image/')"
+                    [src]="previews[i]"
+                    alt="preview"
+            />
+            <i *ngIf="!file.type.startsWith('image/')" class="fa-solid fa-file fa-2x text-muted"></i>
+            <div class="file-info">
+                <div>{{ file.name }}</div>
+                <small>{{ (file.size / 1024 / 1024).toFixed(2) }} MB</small>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="removeFile(i)">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    </div>
+</div>

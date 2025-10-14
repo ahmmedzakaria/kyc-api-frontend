@@ -173,6 +173,14 @@
                     helpText="Please provide details about your request."
                     [required]="true"
             ></app-textarea>
+            <h3>File upload example</h3>
+            <app-file-upload
+                    label="Profile Photo"
+                    accept="image/*"
+                    [multiple]="false"
+                    [maxSizeMB]="3"
+                    formControlName="photo"
+            ></app-file-upload>
 <!--            <app-button label="Submit" variant="primary" (clicked)="submit()"></app-button>-->
             <app-button label="Register" icon="fa-solid fa-user-plus" variant="primary" (clicked)="submit()"></app-button>
 
