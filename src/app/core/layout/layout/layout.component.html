@@ -1,0 +1,16 @@
+<div class="app-layout" *ngIf="layout$ | async as layout" [class.collapsed]="layout.collapsed">
+    <app-sidebar *ngIf="layout.showSidebar"></app-sidebar>
+
+    <div class="main-wrapper">
+        <app-topbar
+                *ngIf="layout.showTopbar"
+                [theme]="layout.theme"
+                [user]="authService.currentUser$ | async"
+                (logout)="onLogout()"
+        ></app-topbar>
+
+        <main class="main-content">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>

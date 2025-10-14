@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
-import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './core/services/auth.service';
+import {LayoutService} from "./core/services/layout.service";
+import {filter} from "rxjs/operators";
+import {map} from "rxjs";
 
 @Component({
     selector: 'app-root',
@@ -10,14 +13,42 @@ import { AuthService } from './core/services/auth.service';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     title = 'KYC Management';
     sidebarOpen = false;
     collapsed = false;
+    loading = false;
+    // constructor(private authService: AuthService, private router: Router) {}
 
-    constructor(private authService: AuthService, private router: Router) {}
+    // constructor(private authService: AuthService,private router: Router, private route: ActivatedRoute, private layout: LayoutService) {}
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute,
+        protected layoutService: LayoutService
+    ) {}
+    ngOnInit() {
+        // 🔄 Dynamic layout switching based on route data
+        this.router.events
+            .pipe(
+                filter(event => event instanceof NavigationEnd),
+                map(() => {
+                    let child = this.route.firstChild;
+                    while (child?.firstChild) child = child.firstChild;
+                    return child?.snapshot.data['layout'] ?? 'default';
+                })
+            )
+            .subscribe(layoutType => {
+                this.layoutService.setLayoutType(layoutType);
+            });
 
-    toggleMobileSidebar() {
+        // Optional global loading indicator
+        this.router.events.subscribe(event => {
+            if (event.constructor.name === 'NavigationStart') this.loading = true;
+            if (event.constructor.name === 'NavigationEnd' || event.constructor.name === 'NavigationCancel') this.loading = false;
+        });
+    }
+
+   toggleMobileSidebar() {
         this.sidebarOpen = !this.sidebarOpen;
     }
 
@@ -28,6 +59,7 @@ export class AppComponent {
         // add class to body or manage main-content via binding (we use binding in template)
     }
 
-  logout(){ this.authService.logout(); this.router.navigate(['/login']); }
-  isLoggedIn(){ return !!this.authService.getToken(); }
+    // logout(){ this.authService.logout(); this.router.navigate(['/login']); }
+    // isLoggedIn(){ return !!this.authService.getToken(); }
 }
+

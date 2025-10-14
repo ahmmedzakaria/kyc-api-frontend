@@ -1,99 +1,12 @@
-<!--
-<nav class='navbar'><span class='brand'>{{ title }}</span>
-    <button *ngIf='isLoggedIn()' (click)='logout()'>Logout</button>
-</nav>
-<div class='container'>
-    <router-outlet></router-outlet>
-</div>-->
+<div class="app-root" [attr.data-bs-theme]="(layoutService.layout$ | async)?.theme">
 
-
-
-<div class="app-layout">
-    <!-- Sidebar -->
-    <nav
-            class="sidebar"
-            [class.collapsed]="collapsed"
-            [class.open]="sidebarOpen"
-            role="navigation"
-            aria-label="Main navigation"
-    >
-        <div class="brand">
-            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-            <span *ngIf="!collapsed" class="ms-1">KYC Admin</span>
-        </div>
-
-        <ul class="nav flex-column px-2">
-            <li class="nav-item">
-                <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
-                    <i class="fa fa-home me-2"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a routerLink="/profile" class="nav-link" routerLinkActive="active">
-                    <i class="fa fa-user-circle me-2"></i> Profile
-                </a>
-            </li>
-            <li class="nav-item">
-                <a routerLink="/person" class="nav-link" routerLinkActive="active">
-                    <i class="fa fa-user-circle me-2"></i> Person
-                </a>
-            </li>
-
-            <li class="nav-item mb-1">
-                <a routerLink="/kyc" routerLinkActive="active" class="nav-link d-flex align-items-center">
-                    <i class="fa-solid fa-list"></i>
-                    <span *ngIf="!collapsed" class="label">Records</span>
-                </a>
-            </li>
-
-            <li class="nav-item mb-1">
-                <a routerLink="/kyc/create" routerLinkActive="active" class="nav-link d-flex align-items-center">
-                    <i class="fa-solid fa-plus"></i>
-                    <span *ngIf="!collapsed" class="label">Create</span>
-                </a>
-            </li>
-
-            <li class="nav-item mb-1 mt-3">
-                <a routerLink="/profile" routerLinkActive="active" class="nav-link d-flex align-items-center">
-                    <i class="fa-solid fa-user"></i>
-                    <span *ngIf="!collapsed" class="label">Profile</span>
-                </a>
-            </li>
-        </ul>
-
-        <div class="mt-auto px-2 pb-3">
-            <button class="btn btn-outline-light w-100 mb-2" (click)="toggleCollapse()" aria-pressed="false">
-                <i class="fa-solid" [ngClass]="{'fa-chevron-left': !collapsed, 'fa-chevron-right': collapsed}"></i>
-                <span *ngIf="!collapsed" class="ms-2">Collapse</span>
-            </button>
-
-            <button *ngIf="isLoggedIn()" class="btn btn-light w-100" (click)="logout()">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span *ngIf="!collapsed" class="ms-2">Logout</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Main content -->
-    <div class="main-content" [class.sidebar-collapsed]="collapsed">
-        <!-- Topbar -->
-        <div class="topbar d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-outline-secondary d-lg-none" (click)="toggleMobileSidebar()">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <div class="brand-text">{{ title }}</div>
-            </div>
-
-            <div class="d-flex align-items-center gap-2">
-                <div *ngIf="isLoggedIn()" class="me-2">Welcome</div>
-                <!-- add other topbar items like user dropdown, notifications -->
-            </div>
-        </div>
-
-        <!-- router outlet -->
-        <div class="p-3">
-            <router-outlet></router-outlet>
+    <!-- Optional Global Loading Spinner -->
+    <div class="loading-overlay" *ngIf="loading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
+
+    <!-- Routed Layout (Main, Auth, etc.) -->
+    <router-outlet></router-outlet>
 </div>

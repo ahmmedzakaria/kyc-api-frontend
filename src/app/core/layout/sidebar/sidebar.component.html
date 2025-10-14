@@ -1,0 +1,7 @@
+<ul class="nav flex-column px-2">
+    <li class="nav-item" *ngFor="let item of visibleItems">
+        <a class="nav-link" [routerLink]="item.path" routerLinkActive="active">
+            <i [class]="item.icon + ' me-2'"></i> {{ item.label }}
+        </a>
+    </li>
+</ul>
