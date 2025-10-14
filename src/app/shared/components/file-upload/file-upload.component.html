@@ -3,13 +3,14 @@
 
     <div
             class="upload-area"
+            [class.dragging]="isDragging"
             (drop)="onDrop($event)"
             (dragover)="onDragOver($event)"
-            tabindex="0"
+            (dragleave)="onDragLeave()"
     >
         <i class="fa-solid fa-cloud-arrow-up fa-2x text-primary mb-2"></i>
-        <p class="text-muted mb-1">{{ hint }}</p>
-        <small *ngIf="accept !== '*/*'" class="text-secondary">Accepted: {{ accept }}</small>
+        <p class="text-muted">{{ hint }}</p>
+
         <input
                 type="file"
                 [attr.accept]="accept"
@@ -18,27 +19,46 @@
         />
     </div>
 
-    <div class="error text-danger mt-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="text-danger mt-2" *ngIf="errorMessage">{{ errorMessage }}</div>
 
-    <!-- Previews -->
-    <div class="preview-list mt-3" *ngIf="showPreview && files.length > 0">
-        <div
-                class="preview-item"
-                *ngFor="let file of files; let i = index"
-        >
+    <!-- Preview List -->
+    <div *ngIf="files.length > 0" class="preview-list mt-3">
+        <div *ngFor="let file of files; let i = index" class="preview-item">
             <img
                     *ngIf="file.type.startsWith('image/')"
                     [src]="previews[i]"
                     alt="preview"
             />
             <i *ngIf="!file.type.startsWith('image/')" class="fa-solid fa-file fa-2x text-muted"></i>
+
             <div class="file-info">
-                <div>{{ file.name }}</div>
+                <div class="fw-semibold text-truncate">{{ file.name }}</div>
                 <small>{{ (file.size / 1024 / 1024).toFixed(2) }} MB</small>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="removeFile(i)">
+
+            <div class="progress flex-grow-1 mx-2" *ngIf="uploadUrl">
+                <div
+                        class="progress-bar bg-success"
+                        role="progressbar"
+                        [style.width.%]="progress[i]"
+                ></div>
+            </div>
+
+            <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="removeFile(i)"
+            >
                 <i class="fa fa-times"></i>
             </button>
         </div>
+
+        <button
+                *ngIf="uploadUrl"
+                class="btn btn-primary mt-3 w-100"
+                (click)="uploadAll()"
+        >
+            <i class="fa-solid fa-upload me-1"></i> Upload All
+        </button>
     </div>
 </div>
