@@ -8,12 +8,16 @@ import {Person} from "./person.model";
 import {PersonService} from "../../core/services/person.service";
 import {GisService} from "../../core/services/gis.service";
 import {LocationDropdownComponent} from "./location-dropdown.component";
+import {TextboxComponent} from "../../shared/components/textbox/textbox.component";
+import {SmartDropdownComponent} from "../../shared/components/smart-dropdown/smart-dropdown.component";
+import {DatePickerComponent} from "../../shared/components/date-picker/date-picker.component";
+import {FileUploadComponent} from "../../shared/components/file-upload/file-upload.component";
 
 
 @Component({
     selector: 'app-person-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, HttpClientModule, LocationDropdownComponent],
+    imports: [CommonModule, ReactiveFormsModule, HttpClientModule, LocationDropdownComponent, TextboxComponent, SmartDropdownComponent, DatePickerComponent, FileUploadComponent],
     templateUrl: './person-form.component.html',
     // styleUrls: ['./person-form.component.scss']
 })
@@ -27,11 +31,24 @@ export class PersonFormComponent {
     selectedFile: File | null = null;
 
     // Dropdown options
-    bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+    bloodGroups = [
+        {label:'A+',value:'A+'},
+        {label:'A-',value:'A-'},
+        {label:'B+',value:'B+'},
+        {label:'B-',value:'B-'},
+        {label:'AB+',value:'AB+'},
+        {label:'AB-',value:'AB-'},
+        {label:'O+',value:'O+'},
+        {label:'O-',value:'O'},
+        ];
     relations = ['Father', 'Mother', 'Brother', 'Sister', 'Friend', 'Other'];
     educationLevels = ['SSC', 'HSC', 'Diploma', 'Bachelor', 'Master', 'PhD'];
     passingYears = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
-
+    genderList = [
+        { label: 'Male', value: 'Male' },
+        { label: 'Female', value: 'Female' },
+        { label: 'Other', value: 'Other' }
+    ]
     // Location search
     currentLocationResults: any[] = [];
     permanentLocationResults: any[] = [];
@@ -41,9 +58,7 @@ export class PersonFormComponent {
         private service: PersonService,
         private http: HttpClient,
         private gisService: GisService,
-    ) {}
-
-    ngOnInit() {
+    ) {
         this.form = this.fb.group({
             id: [],
             username: ['', Validators.required],
@@ -55,6 +70,7 @@ export class PersonFormComponent {
             gender: [''],
             nationalId: [''],
             bloodGroup: [''],
+            photo: [''],
 
             fatherName: [''],
             fatherMobileNumber: [''],
@@ -74,6 +90,10 @@ export class PersonFormComponent {
             permanentLocationId: [''],
             permanentAddress: ['']
         });
+    }
+
+    ngOnInit() {
+
 
         // Load existing data (edit)
         if (this.personData) {
