@@ -2,7 +2,7 @@ import { Component, Input, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import {AuthService} from "../../services/auth/auth.service";
-import {animate, style, transition, trigger} from "@angular/animations";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 interface SidebarItem {
     label: string;
@@ -28,6 +28,11 @@ interface SidebarItem {
                 style({ height: '*', opacity: 1, overflow: 'hidden' }),
                 animate('250ms ease-in', style({ height: 0, opacity: 0 }))
             ])
+        ]),
+        trigger('rotateArrow', [
+            state('collapsed', style({ transform: 'rotate(0deg)' })),
+            state('expanded', style({ transform: 'rotate(90deg)' })),
+            transition('collapsed <=> expanded', animate('200ms ease'))
         ])
     ]
 })
@@ -68,5 +73,9 @@ export class SidebarComponent {
 
     toggleSubMenu(label: string) {
         this.expandedMenu.set(this.expandedMenu() === label ? null : label);
+    }
+
+    isExpanded(label: string): boolean {
+        return this.expandedMenu() === label;
     }
 }
