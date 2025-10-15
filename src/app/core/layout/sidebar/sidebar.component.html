@@ -35,6 +35,7 @@
             <ul
                     *ngIf="item.children && expandedMenu() === item.label"
                     class="submenu list-unstyled ps-4"
+                    [@slideToggle]
             >
                 <li *ngFor="let child of item.children">
                     <a class="nav-link" [routerLink]="child.path" routerLinkActive="active">

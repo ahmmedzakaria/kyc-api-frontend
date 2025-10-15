@@ -2,6 +2,7 @@ import { Component, Input, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import {AuthService} from "../../services/auth/auth.service";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 interface SidebarItem {
     label: string;
@@ -16,7 +17,19 @@ interface SidebarItem {
     standalone: true,
     imports: [NgFor, NgIf, RouterLink, RouterLinkActive],
     templateUrl: './sidebar.component.html',
-    styleUrls: ['./sidebar.component.scss']
+    styleUrls: ['./sidebar.component.scss'],
+    animations: [
+        trigger('slideToggle', [
+            transition(':enter', [
+                style({ height: 0, opacity: 0, overflow: 'hidden' }),
+                animate('250ms ease-out', style({ height: '*', opacity: 1 }))
+            ]),
+            transition(':leave', [
+                style({ height: '*', opacity: 1, overflow: 'hidden' }),
+                animate('250ms ease-in', style({ height: 0, opacity: 0 }))
+            ])
+        ])
+    ]
 })
 export class SidebarComponent {
     constructor(private auth: AuthService) {}
