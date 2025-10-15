@@ -6,11 +6,6 @@
             <i class="fa fa-bars fs-5"></i>
         </button>
 
-        <!-- Brand -->
-        <button class="dropdown-item text-danger" (click)="onLogout()">
-        <i class="fa fa-sign-out-alt me-2"></i>Logout
-        <!-- Mobile Toggle Button -->
-        </button>
         <button
                 class="navbar-toggler"
                 type="button"
@@ -21,7 +16,11 @@
         >
             <span class="navbar-toggler-icon"></span>else
         </button>
-
+        <!-- Brand -->
+        <button class="dropdown-item text-danger" (click)="onLogout()">
+            <i class="fa fa-sign-out-alt me-2"></i>Logout
+            <!-- Mobile Toggle Button -->
+        </button>
         <!-- Navbar Items -->
         <div class="collapse navbar-collapse" [class.show]="isMenuOpen" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center gap-2">
@@ -47,7 +46,7 @@
                         <ng-template #defaultAvatar>
                             <i class="fa fa-user-circle fa-lg me-2"></i>
                         </ng-template>
-                        <span class="d-none d-md-inline">{{ user?.username || 'Guest' }}</span>
+                        <span class="d-none d-md-inline">{{ user?.sub || 'Guest' }}</span>
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">

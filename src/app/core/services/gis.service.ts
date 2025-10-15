@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiEndpoints} from "../api/api-endpoints";
 import {Kyc} from "./kyc.service";
-import {AuthService} from "./auth.service";
+import {AuthService} from "./auth/auth.service";
 import {ApiService} from "../api/api.service";
 
 @Injectable({providedIn: 'root'})

@@ -38,6 +38,7 @@ export class LayoutService {
             showTopbar: true,
             collapsed: false
         });
+        console.log('Authenticated Layout',this._layout());
     }
 
     /** 🚪 Called after logout */

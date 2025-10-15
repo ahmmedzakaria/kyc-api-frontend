@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
-import {AuthService} from "../../core/services/auth.service";
+import {AuthService} from "../../core/services/auth/auth.service";
 import {LayoutService} from "../../core/services/layout.service";
 import {NgIf} from "@angular/common";
 
@@ -39,6 +39,7 @@ export class LoginComponent {
 
         this.authService.login(username, password).subscribe({
             next: () => {
+                console.log('login success setting layout');
                 this.layoutService.setAuthenticatedLayout(); // ✅ switch layout
                 this.router.navigate(['']);
             },

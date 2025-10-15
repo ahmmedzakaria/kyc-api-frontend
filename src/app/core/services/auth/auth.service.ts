@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap, BehaviorSubject } from 'rxjs';
-import {ApiService} from "../api/api.service";
-import {AuthResponse} from "../api/model/auth-response";
-import {ApiEndpoints} from "../api/api-endpoints";
+import {ApiService} from "../../api/api.service";
+import {AuthResponse} from "../../api/model/auth-response";
+import {ApiEndpoints} from "../../api/api-endpoints";
 import {jwtDecode} from "jwt-decode";
-import {LayoutService} from "./layout.service";
+import {LayoutService} from "../layout.service";
 
 
 
@@ -27,6 +27,7 @@ export class AuthService {
     }
 
     login(username: string, password: string) {
+        localStorage.removeItem('token');
         return this.apiService.post<AuthResponse>(ApiEndpoints.KYC_LOGIN, { username, password })
             .pipe(
                 tap(res => {
@@ -52,6 +53,7 @@ export class AuthService {
     private decodeAndSetUser(token: string) {
         try {
             const decoded: DecodedToken = jwtDecode(token);
+            console.log("Token decoded data",decoded);
             this.currentUserSubject.next(decoded);
         } catch (err) {
             console.error('JWT Decode failed', err);

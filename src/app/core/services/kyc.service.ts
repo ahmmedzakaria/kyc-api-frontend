@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {AuthService} from "./auth.service";
+import {AuthService} from "./auth/auth.service";
 import {ApiService} from "../api/api.service";
 import {ApiEndpoints} from "../api/api-endpoints";
 
