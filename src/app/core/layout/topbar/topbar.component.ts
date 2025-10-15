@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { LayoutConfig, LayoutService } from '../../services/layout.service';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { LayoutService } from '../../services/layout.service';
+import {RouterLink} from "@angular/router";
 
 @Component({
     selector: 'app-topbar',
@@ -15,14 +15,27 @@ export class TopbarComponent {
     @Input() user: any;
     @Output() logout = new EventEmitter<void>();
 
-    constructor(
-        protected layoutService: LayoutService
-    ) {}
+    isMenuOpen = true;
 
-    toggleTheme() {
-        const newTheme = this.theme === 'light' ? 'dark' : 'light';
+    constructor(public layoutService: LayoutService) {}
+
+    toggleSidebar() {
+        this.layoutService.toggleSidebar();
+    }
+
+    toggleTheme(): void {
+        const newTheme = this.theme === 'dark' ? 'light' : 'dark';
         this.theme = newTheme;
         this.layoutService.setTheme(newTheme);
-        document.body.setAttribute('data-bs-theme', newTheme); // Optional for Bootstrap 5.3+
+        document.body.setAttribute('data-bs-theme', newTheme);
+    }
+
+    onLogout() {
+        this.logout.emit();
+        console.log("logout");
+    }
+
+    toggleMobileMenu() {
+        this.isMenuOpen = !this.isMenuOpen;
     }
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { NgIf, NgFor } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -20,6 +20,7 @@ export class SidebarComponent {
         { label: 'Records', path: '/kyc', icon: 'fa fa-list', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
         { label: 'Create', path: '/kyc/create', icon: 'fa fa-plus', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
     ];
+    @Input() collapsed!: boolean;
 
     get visibleItems() {
         return this.menuItems.filter(item =>

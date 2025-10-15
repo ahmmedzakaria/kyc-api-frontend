@@ -5,6 +5,7 @@ import {ApiService} from "../api/api.service";
 import {AuthResponse} from "../api/model/auth-response";
 import {ApiEndpoints} from "../api/api-endpoints";
 import {jwtDecode} from "jwt-decode";
+import {LayoutService} from "./layout.service";
 
 
 
@@ -20,7 +21,7 @@ export class AuthService {
     private currentUserSubject = new BehaviorSubject<DecodedToken | null>(null);
     currentUser$ = this.currentUserSubject.asObservable();
 
-    constructor(private http: HttpClient, private apiService: ApiService) {
+    constructor(private http: HttpClient, private apiService: ApiService,private layoutService: LayoutService) {
         const token = this.getToken();
         if (token) this.decodeAndSetUser(token);
     }
@@ -41,6 +42,7 @@ export class AuthService {
     logout() {
         localStorage.removeItem('token');
         this.currentUserSubject.next(null);
+        this.layoutService.setPublicLayout();
     }
 
     getToken(): string | null {

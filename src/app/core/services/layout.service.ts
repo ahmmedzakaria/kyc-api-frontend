@@ -1,74 +1,51 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
 
-export interface LayoutConfig {
-    showSidebar: boolean;
-    showTopbar: boolean;
-    collapsed: boolean;
-    theme: 'light' | 'dark';
-    type: 'default' | 'auth' | 'admin';
-}
+export type ThemeType = 'light' | 'dark';
+export type LayoutType = 'default' | 'compact' | 'horizontal';
 
 @Injectable({ providedIn: 'root' })
 export class LayoutService {
-    private config = new BehaviorSubject<LayoutConfig>({
-        showSidebar: true,
-        showTopbar: true,
-        collapsed: false,
-        theme: 'light',
-        type: 'default',
+    private _layout = signal({
+        showSidebar: false,
+        showTopbar: false,
+        collapsed: false
     });
 
-    layout$ = this.config.asObservable();
-    layoutConfig = this.config.value;
+    private _theme = signal<ThemeType>('light');
+    private _layoutType = signal<LayoutType>('default');
 
-    /**
-     * 🔄 Updates layout configuration partially.
-     */
-    update(config: Partial<LayoutConfig>) {
-        const current = this.config.value;
-        const updated = { ...current, ...config };
-        this.config.next(updated);
+    layout = computed(() => this._layout());
+    theme = computed(() => this._theme());
+    layoutType = computed(() => this._layoutType());
+
+    toggleSidebar(): void {
+        this._layout.update(cfg => ({ ...cfg, collapsed: !cfg.collapsed }));
     }
 
-    /**
-     * 🎨 Sets the application theme dynamically.
-     */
-    setTheme(theme: 'light' | 'dark') {
-        const current = this.config.value;
+    setTheme(theme: ThemeType): void {
+        this._theme.set(theme);
+        document.body.dataset.bsTheme = theme;
+    }
 
-        // Update BehaviorSubject
-        this.config.next({
-            ...current,
-            theme,
+    setLayoutType(type: LayoutType): void {
+        this._layoutType.set(type);
+    }
+
+    /** 🧭 Called after login */
+    setAuthenticatedLayout(): void {
+        this._layout.set({
+            showSidebar: true,
+            showTopbar: true,
+            collapsed: false
         });
-
-        // Optional: Apply theme to document for Bootstrap 5.3+ or global styles
-        document.body.setAttribute('data-bs-theme', theme);
-        document.documentElement.setAttribute('data-theme', theme);
     }
 
-    /**
-     * 📚 Toggles sidebar collapse/expand.
-     */
-    toggleSidebar() {
-        const current = this.config.value;
-        const newState = !current.collapsed;
-
-        this.config.next({
-            ...current,
-            collapsed: newState,
+    /** 🚪 Called after logout */
+    setPublicLayout(): void {
+        this._layout.set({
+            showSidebar: false,
+            showTopbar: false,
+            collapsed: false
         });
-
-        // Optionally persist state (e.g. localStorage)
-        localStorage.setItem('sidebar-collapsed', String(newState));
     }
-
-    /**
-     * 🏗️ Optionally set layout type (admin, auth, etc.)
-     */
-    setLayoutType(type: 'default' | 'auth' | 'admin') {
-        this.update({ type });
-    }
-
 }
