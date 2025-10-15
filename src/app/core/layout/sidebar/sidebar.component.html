@@ -1,7 +1,48 @@
-<ul class="nav flex-column px-2">
-    <li class="nav-item" *ngFor="let item of visibleItems">
-        <a class="nav-link" [routerLink]="item.path" routerLinkActive="active">
-            <i [class]="item.icon + ' me-2'"></i> {{ item.label }}
-        </a>
-    </li>
-</ul>
+<nav class="sidebar d-flex flex-column shadow-sm" [class.collapsed]="collapsed">
+    <!-- Brand -->
+    <div class="brand d-flex align-items-center justify-content-center py-3">
+        <img src="assets/logo.png" alt="Logo" class="brand-logo me-2" />
+        <span class="brand-name" *ngIf="!collapsed">KYC Portal</span>
+    </div>
+
+    <!-- Navigation -->
+    <ul class="nav flex-column mt-3">
+        <li
+                class="nav-item"
+                *ngFor="let item of visibleItems"
+                [class.has-children]="item?.children"
+        >
+            <a
+                    class="nav-link d-flex align-items-center justify-content-between"
+                    [routerLink]="item.path || null"
+                    routerLinkActive="active"
+                    (click)="item.children ? toggleSubMenu(item.label) : null"
+            >
+                <div class="d-flex align-items-center">
+                    <i [class]="item.icon + ' me-2'"></i>
+                    <span *ngIf="!collapsed">{{ item.label }}</span>
+                </div>
+
+                <i
+                        *ngIf="item.children && !collapsed"
+                        class="fa"
+                        [class.fa-chevron-down]="expandedMenu() === item.label"
+                        [class.fa-chevron-right]="expandedMenu() !== item.label"
+                ></i>
+            </a>
+
+            <!-- Submenu -->
+            <ul
+                    *ngIf="item.children && expandedMenu() === item.label"
+                    class="submenu list-unstyled ps-4"
+            >
+                <li *ngFor="let child of item.children">
+                    <a class="nav-link" [routerLink]="child.path" routerLinkActive="active">
+                        <i class="fa fa-angle-right me-1"></i> {{ child.label }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+

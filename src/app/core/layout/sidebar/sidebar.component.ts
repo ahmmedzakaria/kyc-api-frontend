@@ -1,30 +1,59 @@
-import {Component, inject, Input} from '@angular/core';
-import { AuthService } from '../../services/auth/auth.service';
-import {CommonModule} from '@angular/common';
+import { Component, Input, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NgFor, NgIf } from '@angular/common';
+import {AuthService} from "../../services/auth/auth.service";
+
+interface SidebarItem {
+    label: string;
+    icon?: string;
+    path?: string;
+    roles: string[];
+    children?: { label: string; path: string }[];
+}
 
 @Component({
     selector: 'app-sidebar',
     standalone: true,
-    imports: [ CommonModule, RouterLink, RouterLinkActive],
+    imports: [NgFor, NgIf, RouterLink, RouterLinkActive],
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
-    private auth = inject(AuthService);
+    constructor(private auth: AuthService) {}
 
-    menuItems = [
+    @Input() collapsed = false;
+
+    expandedMenu = signal<string | null>(null);
+
+    menuItems: SidebarItem[] = [
         { label: 'Dashboard', path: '/dashboard', icon: 'fa fa-home', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
-        { label: 'Person', path: '/person', icon: 'fa fa-users', roles: ['ROLE_ADMIN'] },
+        {
+            label: 'Person',
+            icon: 'fa fa-users',
+            roles: ['ROLE_ADMIN'],
+            children: [
+                { label: 'Person List', path: '/person' },
+                { label: 'Add Person', path: '/person/create' }
+            ]
+        },
         { label: 'Profile', path: '/profile', icon: 'fa fa-user', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
-        { label: 'Records', path: '/kyc', icon: 'fa fa-list', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
-        { label: 'Create', path: '/kyc/create', icon: 'fa fa-plus', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
+        {
+            label: 'KYC',
+            icon: 'fa fa-id-card',
+            roles: ['ROLE_ADMIN', 'ROLE_USER'],
+            children: [
+                { label: 'All Records', path: '/kyc' },
+                { label: 'Create Record', path: '/kyc/create' }
+            ]
+        }
     ];
-    @Input() collapsed!: boolean;
+
 
     get visibleItems() {
-        return this.menuItems.filter(item =>
-            item.roles.some(r => this.auth.hasRole(r))
-        );
+        return this.menuItems.filter(item => item.roles.some(r => this.auth.hasRole(r)));
+    }
+
+    toggleSubMenu(label: string) {
+        this.expandedMenu.set(this.expandedMenu() === label ? null : label);
     }
 }

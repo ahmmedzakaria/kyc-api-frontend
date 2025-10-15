@@ -6,6 +6,7 @@ import {AuthResponse} from "../../api/model/auth-response";
 import {ApiEndpoints} from "../../api/api-endpoints";
 import {jwtDecode} from "jwt-decode";
 import {LayoutService} from "../layout.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 
 
@@ -21,7 +22,11 @@ export class AuthService {
     private currentUserSubject = new BehaviorSubject<DecodedToken | null>(null);
     currentUser$ = this.currentUserSubject.asObservable();
 
-    constructor(private http: HttpClient, private apiService: ApiService,private layoutService: LayoutService) {
+    constructor(private http: HttpClient,
+                private apiService: ApiService,
+                private layoutService: LayoutService,
+                private router: Router,
+    ) {
         const token = this.getToken();
         if (token) this.decodeAndSetUser(token);
     }
@@ -44,6 +49,7 @@ export class AuthService {
         localStorage.removeItem('token');
         this.currentUserSubject.next(null);
         this.layoutService.setPublicLayout();
+        this.router.navigate(['/login']);
     }
 
     getToken(): string | null {
