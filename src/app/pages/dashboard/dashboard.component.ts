@@ -13,7 +13,6 @@ import {CheckboxComponent} from "../../shared/components/checkbox/checkbox.compo
 import {TextareaComponent} from "../../shared/components/textarea/textarea.component";
 import {DropdownComponent} from "../../shared/components/dropdown/dropdown.component";
 import {SmartDropdownComponent} from "../../shared/components/smart-dropdown/smart-dropdown.component";
-import {ScrollableDropdownComponent} from "../../shared/components/scrollable-dropdown/scrollable-dropdown.component";
 import {FileUploadComponent} from "../../shared/components/file-upload/file-upload.component";
 
 @Component({
