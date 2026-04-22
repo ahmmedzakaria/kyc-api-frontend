@@ -45,6 +45,7 @@ export class SidebarComponent {
 
     menuItems: SidebarItem[] = [
         { label: 'Dashboard', path: '/dashboard', icon: 'fa fa-home', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
+        { label: 'All component demo', path: '/component-demo', icon: 'fa fa-puzzle-piece', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
         {
             label: 'Person',
             icon: 'fa fa-users',

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import {Person} from "./person.model";
@@ -25,10 +25,8 @@ export class PersonFormComponent {
     @Input() personData?: Person;
     @Output() saved = new EventEmitter<void>();
 
-
     form!: FormGroup;
     photoPreview: string | ArrayBuffer | null = null;
-    selectedFile: File | null = null;
 
     // Dropdown options
     bloodGroups = [
@@ -56,7 +54,6 @@ export class PersonFormComponent {
     constructor(
         private fb: FormBuilder,
         private service: PersonService,
-        private http: HttpClient,
         private gisService: GisService,
     ) {
         this.form = this.fb.group({
@@ -93,8 +90,6 @@ export class PersonFormComponent {
     }
 
     ngOnInit() {
-
-
         // Load existing data (edit)
         if (this.personData) {
             this.form.patchValue(this.personData);
@@ -151,18 +146,7 @@ export class PersonFormComponent {
             })
         ).subscribe((results: any) => {
             (this as any)[resultKey] = results.content;
-           // console.log(this.currentLocationResults);
         });
-    }
-
-    onFileSelected(event: any) {
-        const file = event.target.files[0];
-        if (file) {
-            this.selectedFile = file;
-            const reader = new FileReader();
-            reader.onload = e => (this.photoPreview = (e.target as FileReader).result);
-            reader.readAsDataURL(file);
-        }
     }
 
     selectLocation(type: 'current' | 'permanent', location: any) {
@@ -178,15 +162,21 @@ export class PersonFormComponent {
     submit() {
         const formData = new FormData();
         Object.entries(this.form.value).forEach(([key, val]) => {
-            if (val !== null && val !== undefined && key !== 'sameAddress')
+            if (val !== null && val !== undefined && key !== 'sameAddress' && key !== 'photo')
                 formData.append(key, val.toString());
         });
 
-        if (this.selectedFile) {
-            formData.append('photo', this.selectedFile);
+        const selectedFiles = this.form.value.photo as File[] | null;
+        const selectedFile = selectedFiles?.[0];
+        if (selectedFile) {
+            formData.append('photo', selectedFile);
         }
 
-        this.service.createPerson(formData).subscribe({
+        const request$ = this.personData?.id
+            ? this.service.updatePerson(formData)
+            : this.service.createPerson(formData);
+
+        request$.subscribe({
             next: () => this.saved.emit(),
         });
     }

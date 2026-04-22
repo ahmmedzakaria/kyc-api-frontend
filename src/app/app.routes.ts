@@ -22,9 +22,24 @@ export const routes: Routes = [
                     import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
             },
             {
+                path: 'component-demo',
+                loadComponent: () =>
+                    import('./pages/component-demo/component-demo.component').then(m => m.ComponentDemoComponent),
+            },
+            {
                 path: 'person',
                 loadComponent: () =>
                     import('./pages/person/person-list/person-list.component').then(m => m.PersonListComponent),
+            },
+            {
+                path: 'person/create',
+                loadComponent: () =>
+                    import('./pages/person/person-editor.component').then(m => m.PersonEditorComponent),
+            },
+            {
+                path: 'person/:id/edit',
+                loadComponent: () =>
+                    import('./pages/person/person-editor.component').then(m => m.PersonEditorComponent),
             },
             {
                 path: 'kyc',

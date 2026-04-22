@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
 import { PersonService } from '../../../core/services/person.service';
-import {PersonFormComponent} from "../person-form.component";
-import {Observable, pipe} from "rxjs"
+import {Observable} from "rxjs"
 import {Person} from "../person.model";
+import {Router, RouterLink} from "@angular/router";
 
 @Component({
     selector: 'app-person-list',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, PersonFormComponent],
+    imports: [CommonModule, ReactiveFormsModule, RouterLink],
     templateUrl: './person-list.component.html',
     // styleUrls: ['./person-list.component.scss']
 })
@@ -21,8 +21,11 @@ export class PersonListComponent implements OnInit {
     currentPage = 0;
     pageSize = 10;
 
-    editingPerson: any = null;
-    constructor(private service: PersonService, private fb: FormBuilder) {}
+    constructor(
+        private service: PersonService,
+        private fb: FormBuilder,
+        private router: Router
+    ) {}
     searchForm!: FormGroup;
 
 
@@ -67,13 +70,8 @@ export class PersonListComponent implements OnInit {
         this.currentPage = data?.number || 0;
     }
 
-    onSaved() {
-        this.editingPerson = null;
-        this.loadData(this.currentPage);
-    }
-
     edit(person: any) {
-        this.editingPerson = person;
+        this.router.navigate(['/person', person.id, 'edit'], { state: { person } });
     }
 
     delete(person: any) {
