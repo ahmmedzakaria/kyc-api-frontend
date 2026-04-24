@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import {AuthService} from "../services/auth/auth.service";
 import {ActionTypes} from "./api-endpoints";
 import {Environment} from "./environment";
@@ -42,18 +42,93 @@ export class ApiService {
     /**
      * Generalized POST for all actions (create, update, delete, search, login)
      */
-    post<T>(apiInfo: ApiEndpoint, body: any = {}): Observable<T> {
-        // Inject standard "source" property
-        body.source = "KYC_APP";
+    post<T>(
+        apiInfo: ApiEndpoint,
+        body: any = {},
+        options: {
+            headers?: HttpHeaders;
+            responseType?: 'json' | 'arraybuffer';
+            observe?: 'body' | 'response';
+        } = {}
+    ): Observable<T> {
+        if (body instanceof FormData) {
+            if (!body.has('source')) {
+                body.append('source', 'KYC_APP');
+            }
+        } else {
+            body.source = "KYC_APP";
+        }
 
         // Decide base path: login requests go to loginUrl
         const basePath = (apiInfo.actionType === ActionTypes.LOGIN) ? this.loginUrl : this.baseUrl;
 
-        const headers = this.buildHeaders(apiInfo.isMultiPart);
-        const requestOptions = { headers };
+        const headers = options.headers || this.buildHeaders(apiInfo.isMultiPart);
+        const requestOptions = {
+            ...options,
+            headers,
+        } as any;
 
-        return this.http.post<T>(`${basePath}/${apiInfo.apiPath}`, body, requestOptions).pipe(
+        return this.http.post(`${basePath}/${apiInfo.apiPath}`, body, requestOptions).pipe(
             catchError(this.handleError)
+        ) as Observable<T>;
+    }
+
+    fetchBinaryData(
+        apiInfo: ApiEndpoint,
+        body: any = {},
+        options: {
+            headers?: HttpHeaders;
+            responseType?: 'arraybuffer';
+            observe?: 'response';
+        } = { responseType: 'arraybuffer', observe: 'response' }
+    ): Observable<{ blob: Blob; filename: string; contentType: string | null }> {
+        if (!apiInfo) {
+            return throwError(() => new Error('Api information is missing'));
+        }
+
+        if (body instanceof FormData) {
+            if (!body.has('source')) {
+                body.append('source', 'KYC_APP');
+            }
+        } else {
+            body.source = 'KYC_APP';
+        }
+
+        const requestOptions = {
+            ...options,
+            responseType: 'arraybuffer' as const,
+            observe: 'response' as const,
+        };
+
+        return this.post<HttpResponse<ArrayBuffer>>(apiInfo, body, requestOptions).pipe(
+            map((response: HttpResponse<ArrayBuffer>) => {
+                const contentType = response.headers.get('Content-Type');
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'download';
+
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename\*?=(?:UTF-8''|\"?)([^\";]+)/i);
+                    if (match?.[1]) {
+                        filename = decodeURIComponent(match[1].replace(/\"/g, ''));
+                    }
+                }
+
+                const blob = new Blob([response.body ?? new ArrayBuffer(0)], {
+                    type: contentType || 'application/octet-stream',
+                });
+
+                return { blob, filename, contentType };
+            }),
+            catchError(this.handleError)
+        );
+    }
+
+    fetchImageUrl(
+        apiInfo: ApiEndpoint,
+        body: any = {}
+    ): Observable<string> {
+        return this.fetchBinaryData(apiInfo, body).pipe(
+            map(({ blob }) => URL.createObjectURL(blob))
         );
     }
 

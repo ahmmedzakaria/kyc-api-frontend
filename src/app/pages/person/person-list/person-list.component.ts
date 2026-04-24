@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
@@ -6,6 +6,8 @@ import { PersonService } from '../../../core/services/person.service';
 import {Observable} from "rxjs"
 import {Person} from "../person.model";
 import {Router, RouterLink} from "@angular/router";
+import {ApiService} from "../../../core/api/api.service";
+import {ApiEndpoints} from "../../../core/api/api-endpoints";
 
 @Component({
     selector: 'app-person-list',
@@ -14,17 +16,19 @@ import {Router, RouterLink} from "@angular/router";
     templateUrl: './person-list.component.html',
     // styleUrls: ['./person-list.component.scss']
 })
-export class PersonListComponent implements OnInit {
+export class PersonListComponent implements OnInit, OnDestroy {
     persons: any[] = [];
     totalElements = 0;
     totalPages = 0;
     currentPage = 0;
     pageSize = 10;
+    private photoObjectUrls: string[] = [];
 
     constructor(
         private service: PersonService,
         private fb: FormBuilder,
-        private router: Router
+        private router: Router,
+        private apiService: ApiService
     ) {}
     searchForm!: FormGroup;
 
@@ -56,6 +60,10 @@ export class PersonListComponent implements OnInit {
             });
     }
 
+    ngOnDestroy(): void {
+        this.revokePhotoUrls();
+    }
+
     loadData(page: number = 0) {
         this.service.searchPersons(this.searchForm.value.searchText || '', page, this.pageSize)
             .subscribe({
@@ -64,14 +72,38 @@ export class PersonListComponent implements OnInit {
     }
 
     populateData(data: any) {
-        this.persons = data?.content || [];
+        this.revokePhotoUrls();
+        this.persons = (data?.content || []).map((person: any) => ({
+            ...person,
+            photoUrl: 'assets/default-avatar.svg',
+        }));
         this.totalElements = data?.totalElements || 0;
         this.totalPages = data?.totalPages || 0;
         this.currentPage = data?.number || 0;
+
+        this.persons.forEach((person: any) => {
+            if (!person.id) {
+                return;
+            }
+
+            this.apiService.fetchImageUrl(ApiEndpoints.PERSON_PHOTO, { ownerId: person.id }).subscribe({
+                next: (imageUrl) => {
+                    this.photoObjectUrls.push(imageUrl);
+                    person.photoUrl = imageUrl;
+                },
+                error: () => {
+                    person.photoUrl = 'assets/default-avatar.svg';
+                }
+            });
+        });
     }
 
     edit(person: any) {
         this.router.navigate(['/person', person.id, 'edit'], { state: { person } });
+    }
+
+    preview(person: any) {
+        this.router.navigate(['/person', person.id, 'preview'], { state: { person } });
     }
 
     delete(person: any) {
@@ -84,5 +116,10 @@ export class PersonListComponent implements OnInit {
         if (page >= 0 && page < this.totalPages) {
             this.loadData(page);
         }
+    }
+
+    private revokePhotoUrls(): void {
+        this.photoObjectUrls.forEach(url => URL.revokeObjectURL(url));
+        this.photoObjectUrls = [];
     }
 }

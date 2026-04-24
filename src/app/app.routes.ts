@@ -42,6 +42,11 @@ export const routes: Routes = [
                     import('./pages/person/person-editor.component').then(m => m.PersonEditorComponent),
             },
             {
+                path: 'person/:id/preview',
+                loadComponent: () =>
+                    import('./pages/person/person-preview.component').then(m => m.PersonPreviewComponent),
+            },
+            {
                 path: 'kyc',
                 loadComponent: () =>
                     import('./pages/kyc-list/kyc-list.component').then(m => m.KycListComponent),

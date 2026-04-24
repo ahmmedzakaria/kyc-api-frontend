@@ -34,7 +34,7 @@
             <tbody>
             <tr *ngFor="let p of persons">
                 <td>
-                    <img [src]="p.photoUrl || 'assets/default-avatar.png'"
+                    <img [src]="p.photoUrl || 'assets/default-avatar.svg'"
                          class="rounded-circle shadow-sm" width="45" height="45" />
                 </td>
                 <td>{{ p.firstName }} {{ p.lastName }}</td>
@@ -43,6 +43,9 @@
                 <td>{{ p.gender }}</td>
                 <td>{{ p.educationLevel }}</td>
                 <td>
+                    <button class="btn btn-sm btn-outline-secondary me-2" (click)="preview(p)" title="Preview">
+                        <i class="fa fa-eye"></i>
+                    </button>
                     <button class="btn btn-sm btn-outline-primary me-2" (click)="edit(p)">
                         <i class="fa fa-edit"></i>
                     </button>

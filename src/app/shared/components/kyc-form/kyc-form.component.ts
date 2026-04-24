@@ -16,7 +16,6 @@ export class KycFormComponent {
   @Output() saved = new EventEmitter<Kyc>();
 
   form: FormGroup;
-  selectedFile?: File;
 
   constructor(private fb: FormBuilder, private kycService: KycService) {
     this.form = this.fb.group({
@@ -29,7 +28,12 @@ export class KycFormComponent {
 
   ngOnInit() { if (this.kycData) this.form.patchValue(this.kycData); }
 
-  onFileSelected(event: any) { this.selectedFile = event.target.files[0]; }
+  onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0] ?? null;
+    this.form.patchValue({ photo: file });
+    this.form.get('photo')?.markAsDirty();
+  }
 
   submit() {
     let formData = new FormData();
@@ -38,7 +42,11 @@ export class KycFormComponent {
     formData.append('phone', this.form.value.phone);
     formData.append('lastName', '');
     formData.append('nationalId', this.form.value.name + '-NID');
-    if (this.selectedFile) formData.append('photo', this.selectedFile);
+
+    const selectedFile = this.form.value.photo as File | null;
+    if (selectedFile) {
+      formData.append('photo', selectedFile);
+    }
 
     if (this.kycData?.id) {
 

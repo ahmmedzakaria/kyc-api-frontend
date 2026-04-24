@@ -10,6 +10,20 @@ export interface Person {
     nationalId?: string;
     bloodGroup?: string;
     photoUrl?: string;
+    fatherName?: string;
+    fatherMobileNumber?: string;
+    motherName?: string;
+    motherMobileNumber?: string;
+    emergencyContactPerson?: string;
+    emergencyContactPersonRelation?: string;
+    emergencyContactNumber?: string;
+    educationLevel?: string;
+    institutionName?: string;
+    passingYear?: string;
+    currentLocationId?: string;
+    currentAddress?: string;
+    permanentLocationId?: string;
+    permanentAddress?: string;
     emailVerified?: boolean;
     mobileVerified?: boolean;
 }

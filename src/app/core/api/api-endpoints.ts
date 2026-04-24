@@ -23,6 +23,7 @@ export const ApiEndpoints: { [key: string]: ApiEndpoint } = {
     PERSON_UPDATE: { service: 'PERSON', apiPath: 'v1/person/update', actionType: ActionTypes.UPDATE, isMultiPart: true },
     PERSON_SEARCH: { service: 'PERSON', apiPath: 'v1/person/search', actionType: ActionTypes.SEARCH },
     PERSON_DELETE: { service: 'PERSON', apiPath: 'v1/person/delete', actionType: ActionTypes.DELETE },
+    PERSON_PHOTO: { service: 'PERSON', apiPath: 'v1/person/photo', actionType: ActionTypes.SEARCH },
 
     GIS_SEARCH: { service: 'GIS', apiPath: 'locations/search', actionType: ActionTypes.SEARCH },
 
