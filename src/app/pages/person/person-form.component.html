@@ -98,6 +98,8 @@
                         accept="*.png"
                         [multiple]="false"
                         [maxSizeMB]="5"
+                        [existingPreviewUrl]="photoPreview ? photoPreview.toString() : ''"
+                        existingPreviewTitle="Current uploaded photo"
                 ></app-file-upload>
             </div>
         </div>

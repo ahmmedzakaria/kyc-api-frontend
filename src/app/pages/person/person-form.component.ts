@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -7,6 +7,8 @@ import { of } from 'rxjs';
 import {Person} from "./person.model";
 import {PersonService} from "../../core/services/person.service";
 import {GisService} from "../../core/services/gis.service";
+import {ApiService} from "../../core/api/api.service";
+import {ApiEndpoints} from "../../core/api/api-endpoints";
 import {LocationDropdownComponent} from "./location-dropdown.component";
 import {TextboxComponent} from "../../shared/components/textbox/textbox.component";
 import {SmartDropdownComponent} from "../../shared/components/smart-dropdown/smart-dropdown.component";
@@ -21,7 +23,7 @@ import {FileUploadComponent} from "../../shared/components/file-upload/file-uplo
     templateUrl: './person-form.component.html',
     // styleUrls: ['./person-form.component.scss']
 })
-export class PersonFormComponent {
+export class PersonFormComponent implements OnDestroy {
     @Input() personData?: Person;
     @Output() saved = new EventEmitter<void>();
 
@@ -29,6 +31,7 @@ export class PersonFormComponent {
     photoPreview: string | ArrayBuffer | null = null;
     currentLocationLabel = '';
     permanentLocationLabel = '';
+    private previewObjectUrl: string | null = null;
 
     // Dropdown options
     bloodGroups = [
@@ -57,6 +60,7 @@ export class PersonFormComponent {
         private fb: FormBuilder,
         private service: PersonService,
         private gisService: GisService,
+        private apiService: ApiService,
     ) {
         this.form = this.fb.group({
             id: [],
@@ -97,7 +101,7 @@ export class PersonFormComponent {
         // Load existing data (edit)
         if (this.personData) {
             this.form.patchValue(this.personData);
-            this.photoPreview = this.personData.photoUrl || null;
+            this.loadPhotoPreview();
             this.loadLocationLabel('current');
             this.loadLocationLabel('permanent');
         }
@@ -200,6 +204,26 @@ export class PersonFormComponent {
         });
     }
 
+    private loadPhotoPreview(): void {
+        const personId = this.personData?.id;
+        if (!personId) {
+            this.photoPreview = null;
+            return;
+        }
+
+        this.apiService.fetchImageUrl(ApiEndpoints.PERSON_PHOTO, { ownerId: personId }).subscribe({
+            next: (imageUrl) => {
+                this.revokePreviewUrl();
+                this.previewObjectUrl = imageUrl;
+                this.photoPreview = imageUrl;
+            },
+            error: () => {
+                this.revokePreviewUrl();
+                this.photoPreview = null;
+            }
+        });
+    }
+
     selectLocation(type: 'current' | 'permanent', location: any) {
         if (type === 'current') {
             this.form.patchValue({ currentLocationId: location.id });
@@ -230,5 +254,18 @@ export class PersonFormComponent {
         request$.subscribe({
             next: () => this.saved.emit(),
         });
+    }
+
+    ngOnDestroy(): void {
+        this.revokePreviewUrl();
+    }
+
+    private revokePreviewUrl(): void {
+        if (!this.previewObjectUrl) {
+            return;
+        }
+
+        URL.revokeObjectURL(this.previewObjectUrl);
+        this.previewObjectUrl = null;
     }
 }

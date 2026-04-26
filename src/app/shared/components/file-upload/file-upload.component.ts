@@ -12,11 +12,12 @@ import {
 } from '@angular/forms';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
+import { ImagePreviewComponent } from '../image-preview/image-preview.component';
 
 @Component({
     selector: 'app-file-upload',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, ImagePreviewComponent],
     templateUrl: './file-upload.component.html',
     styleUrls: ['./file-upload.component.scss'],
     providers: [
@@ -35,6 +36,8 @@ export class FileUploadComponent implements ControlValueAccessor {
     @Input() maxSizeMB = 10;
     @Input() uploadUrl?: string; // optional API endpoint
     @Input() showPreview = true;
+    @Input() existingPreviewUrl = '';
+    @Input() existingPreviewTitle = 'Current Photo';
 
     @Output() filesSelected = new EventEmitter<File[]>();
     @Output() uploadComplete = new EventEmitter<any>();
@@ -53,6 +56,10 @@ export class FileUploadComponent implements ControlValueAccessor {
     // === ControlValueAccessor ===
     writeValue(value: File[] | null): void {
         this.files = value || [];
+        this.progress = this.files.map(() => 0);
+        if (this.showPreview) {
+            this.generatePreviews();
+        }
     }
     registerOnChange(fn: any): void {
         this.onChange = fn;
@@ -159,5 +166,9 @@ export class FileUploadComponent implements ControlValueAccessor {
         this.previews.splice(index, 1);
         this.progress.splice(index, 1);
         this.onChange(this.files);
+    }
+
+    get shouldShowExistingPreview(): boolean {
+        return this.showPreview && this.files.length === 0 && !!this.existingPreviewUrl;
     }
 }

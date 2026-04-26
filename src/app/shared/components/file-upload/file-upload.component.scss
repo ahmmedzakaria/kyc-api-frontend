@@ -1,4 +1,9 @@
 .file-upload {
+  .existing-preview {
+    display: inline-flex;
+    flex-direction: column;
+  }
+
   .upload-area {
     position: relative;
     border: 2px dashed #ccc;
@@ -44,6 +49,11 @@
 
     &:hover {
       background: #f1f3f5;
+    }
+
+    app-image-preview {
+      display: inline-flex;
+      line-height: 0;
     }
 
     img {
