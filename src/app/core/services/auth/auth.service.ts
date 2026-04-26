@@ -21,6 +21,7 @@ interface DecodedToken {
 export class AuthService {
     private currentUserSubject = new BehaviorSubject<DecodedToken | null>(null);
     currentUser$ = this.currentUserSubject.asObservable();
+    private logoutTimerId: ReturnType<typeof setTimeout> | null = null;
 
     constructor(private http: HttpClient,
                 private apiService: ApiService,
@@ -28,7 +29,13 @@ export class AuthService {
                 private router: Router,
     ) {
         const token = this.getToken();
-        if (token) this.decodeAndSetUser(token);
+        if (token) {
+            if (this.isTokenExpired(token)) {
+                this.logout(false);
+            } else {
+                this.decodeAndSetUser(token);
+            }
+        }
     }
 
     login(username: string, password: string) {
@@ -45,11 +52,15 @@ export class AuthService {
             );
     }
 
-    logout() {
+    logout(redirectToLogin: boolean = true) {
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        this.clearLogoutTimer();
         this.currentUserSubject.next(null);
         this.layoutService.setPublicLayout();
-        this.router.navigate(['/login']);
+        if (redirectToLogin) {
+            this.router.navigate(['/login']);
+        }
     }
 
     getToken(): string | null {
@@ -59,14 +70,64 @@ export class AuthService {
     private decodeAndSetUser(token: string) {
         try {
             const decoded: DecodedToken = jwtDecode(token);
-            console.log("Token decoded data",decoded);
+            console.log('decoded',decoded)
             this.currentUserSubject.next(decoded);
+            this.scheduleAutoLogout(decoded.exp);
         } catch (err) {
             console.error('JWT Decode failed', err);
+            this.logout();
         }
+    }
+
+    isAuthenticated(): boolean {
+        const token = this.getToken();
+        if (!token) {
+            return false;
+        }
+
+        if (this.isTokenExpired(token)) {
+            this.logout();
+            return false;
+        }
+
+        return true;
+    }
+
+    handleSessionExpired(): void {
+        this.logout();
     }
 
     hasRole(role: string): boolean {
         return this.currentUserSubject.value?.roles?.includes(role) ?? false;
+    }
+
+    private isTokenExpired(token: string): boolean {
+        try {
+            const decoded: DecodedToken = jwtDecode(token);
+            return decoded.exp * 1000 <= Date.now();
+        } catch {
+            return true;
+        }
+    }
+
+    private scheduleAutoLogout(expirationInSeconds: number): void {
+        this.clearLogoutTimer();
+
+        const remainingMs = expirationInSeconds * 1000 - Date.now();
+        if (remainingMs <= 0) {
+            this.logout();
+            return;
+        }
+
+        this.logoutTimerId = setTimeout(() => {
+            this.logout();
+        }, remainingMs);
+    }
+
+    private clearLogoutTimer(): void {
+        if (this.logoutTimerId) {
+            clearTimeout(this.logoutTimerId);
+            this.logoutTimerId = null;
+        }
     }
 }
