@@ -8,11 +8,12 @@ import {Person} from "../person.model";
 import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
 import {ApiEndpoints} from "../../../core/api/api-endpoints";
+import { ImagePreviewComponent } from '../../../shared/components/image-preview/image-preview.component';
 
 @Component({
     selector: 'app-person-list',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterLink],
+    imports: [CommonModule, ReactiveFormsModule, RouterLink, ImagePreviewComponent],
     templateUrl: './person-list.component.html',
     // styleUrls: ['./person-list.component.scss']
 })

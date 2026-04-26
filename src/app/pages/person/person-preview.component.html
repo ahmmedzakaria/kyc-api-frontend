@@ -7,10 +7,10 @@
 
         <div class="d-flex gap-2">
             <a class="btn btn-outline-secondary" routerLink="/person">
-                <i class="fa fa-arrow-left me-2"></i>Back to Person List
+                <i class="fa fa-arrow-left me-2"></i>Back
             </a>
             <a class="btn btn-primary" [routerLink]="['/person', p.id, 'edit']" [state]="{ person: p }">
-                <i class="fa fa-edit me-2"></i>Edit Person
+                <i class="fa fa-edit me-2"></i>Edit
             </a>
         </div>
     </div>
@@ -19,13 +19,19 @@
         <div class="card-body">
             <div class="row align-items-center g-4">
                 <div class="col-md-3 text-center">
-                    <img
+                    <app-image-preview
                             [src]="photoUrl"
-                            (error)="onImageError($event)"
-                            class="rounded-circle shadow-sm object-fit-cover"
-                            width="140"
-                            height="140"
-                            alt="Person photo" />
+                            alt="Person photo"
+                            title="Person Photo"
+                            [subtitle]="(p.firstName || '-') + ' ' + (p.lastName || '')"
+                            hint="Click photo to view full image"
+                            thumbnailClass="rounded-circle shadow-sm object-fit-cover"
+                            [width]="140"
+                            [height]="140"
+                            imageClass="img-fluid rounded-4 shadow-sm"
+                            [previewOnClick]="true"
+                            [disabled]="photoUrl === 'assets/default-avatar.svg'">
+                    </app-image-preview>
                 </div>
                 <div class="col-md-9">
                     <h3 class="mb-1">{{ p.firstName || '-' }} {{ p.lastName || '' }}</h3>
@@ -98,17 +104,25 @@
                         <div class="small text-muted">Mother Mobile</div>
                         <div>{{ p.motherMobileNumber || '-' }}</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="border-bottom pb-2 mb-3">Emergency Contact Information</h5>
                     <div class="mb-3">
-                        <div class="small text-muted">Emergency Contact</div>
+                        <div class="small text-muted">Emergency Contact Person</div>
                         <div>{{ p.emergencyContactPerson || '-' }}</div>
                     </div>
                     <div class="mb-3">
-                        <div class="small text-muted">Relation</div>
-                        <div>{{ p.emergencyContactPersonRelation || '-' }}</div>
+                        <div class="small text-muted">Emergency Contact</div>
+                        <div>{{ p.emergencyContactNumber || '-' }}</div>
                     </div>
                     <div>
-                        <div class="small text-muted">Emergency Number</div>
-                        <div>{{ p.emergencyContactNumber || '-' }}</div>
+                        <div class="small text-muted">Relation</div>
+                        <div>{{ p.emergencyContactPersonRelation || '-' }}</div>
                     </div>
                 </div>
             </div>
@@ -143,19 +157,20 @@
                         <div>{{ p.currentAddress || '-' }}</div>
                     </div>
                     <div class="mb-3">
-                        <div class="small text-muted">Current Location ID</div>
-                        <div>{{ p.currentLocationId || '-' }}</div>
+                        <div class="small text-muted">Current Location</div>
+                        <div>{{ currentLocationLabel }}</div>
                     </div>
                     <div class="mb-3">
                         <div class="small text-muted">Permanent Address</div>
                         <div>{{ p.permanentAddress || '-' }}</div>
                     </div>
                     <div>
-                        <div class="small text-muted">Permanent Location ID</div>
-                        <div>{{ p.permanentLocationId || '-' }}</div>
+                        <div class="small text-muted">Permanent Location</div>
+                        <div>{{ permanentLocationLabel }}</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>

@@ -34,8 +34,17 @@
             <tbody>
             <tr *ngFor="let p of persons">
                 <td>
-                    <img [src]="p.photoUrl || 'assets/default-avatar.svg'"
-                         class="rounded-circle shadow-sm" width="45" height="45" />
+                    <app-image-preview
+                            [src]="p.photoUrl || 'assets/default-avatar.svg'"
+                            alt="Person photo"
+                            title="Person Photo"
+                            [subtitle]="(p.firstName || '-') + ' ' + (p.lastName || '')"
+                            thumbnailClass="rounded-circle shadow-sm object-fit-cover"
+                            [width]="45"
+                            [height]="45"
+                            [previewOnClick]="false"
+                            [disabled]="false">
+                    </app-image-preview>
                 </td>
                 <td>{{ p.firstName }} {{ p.lastName }}</td>
                 <td>{{ p.email }}</td>
