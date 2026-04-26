@@ -87,7 +87,7 @@
         <app-smart-dropdown
                 label="District"
                 mode="api-simple"
-                apiUrl="http://localhost:9100/api/locations/search"
+                apiUrl="/api/locations/search"
                 [requestBody]="{ searchText: '', page: 0, size: 10, source: 'KYC_APP' }"
                 formControlName="district">
         </app-smart-dropdown>
@@ -95,7 +95,7 @@
         <app-smart-dropdown
                 label="Village"
                 mode="api-scroll"
-                apiUrl="http://localhost:9100/api/locations/search"
+                apiUrl="/api/locations/search"
                 [requestBody]="{ searchText: '', page: 0, size: 10, source: 'KYC_APP' }"
                 [pageSize]="20"
                 formControlName="village">
@@ -165,7 +165,7 @@
                 accept="*.png"
                 [multiple]="true"
                 [maxSizeMB]="5"
-                uploadUrl="http://localhost:9100/api/upload">
+                uploadUrl="/api/upload">
         </app-file-upload>
 
         <app-button label="Register" icon="fa-solid fa-user-plus" variant="primary" (clicked)="submit()"></app-button>

@@ -1,6 +1,6 @@
 export const API = {
-  AUTH_BASE_URL: 'http://localhost:9100',
-  BASE_URL: 'http://localhost:9100/api',
+  AUTH_BASE_URL: '',
+  BASE_URL: '/api',
   AUTH: { LOGIN: '/auth/authenticate' },
   KYC: { CREATE: '/kyc/create',
       SEARCH: '/kyc/search',
