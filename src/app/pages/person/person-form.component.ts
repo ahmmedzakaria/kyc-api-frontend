@@ -58,7 +58,7 @@ export class PersonFormComponent {
     ) {
         this.form = this.fb.group({
             id: [],
-            username: ['', Validators.required],
+            username: [''],
             mobileNumber: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             firstName: [''],
@@ -74,8 +74,8 @@ export class PersonFormComponent {
             motherName: [''],
             motherMobileNumber: [''],
             emergencyContactPerson: [''],
-            emergencyContactPersonRelation: [''],
             emergencyContactNumber: [''],
+            emergencyContactPersonRelation: [''],
 
             educationLevel: [''],
             institutionName: [''],

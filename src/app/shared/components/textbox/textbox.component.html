@@ -7,6 +7,7 @@
                 class="form-control"
                 [placeholder]="placeholder || label"
                 [disabled]="disabled"
+                [readOnly]="readonly"
                 (blur)="onTouched()"
                 [ngClass]="{'is-invalid': hasError}"
         />
@@ -36,6 +37,7 @@
                     class="form-control"
                     [placeholder]="placeholder"
                     [disabled]="disabled"
+                    [readOnly]="readonly"
                     (blur)="onTouched()"
                     [ngClass]="{'is-invalid': hasError}"
             />

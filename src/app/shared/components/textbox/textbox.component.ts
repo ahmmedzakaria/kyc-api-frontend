@@ -53,6 +53,7 @@ export class TextboxComponent implements ControlValueAccessor, OnInit {
     @Input() onlyNumber = false;
     @Input() noSpecialChars = false;
     @Input() disabled = false;
+    @Input() readonly = false;
     @Input() toggleVisibility = false; // 👁️ NEW FEATURE
 
     @Output() valueChange = new EventEmitter<string>();
