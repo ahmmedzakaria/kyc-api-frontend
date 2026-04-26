@@ -21,8 +21,10 @@ export interface Person {
     institutionName?: string;
     passingYear?: string;
     currentLocationId?: string;
+    currentLocationType?: string;
     currentAddress?: string;
     permanentLocationId?: string;
+    permanentLocationType?: string;
     permanentAddress?: string;
     emailVerified?: boolean;
     mobileVerified?: boolean;

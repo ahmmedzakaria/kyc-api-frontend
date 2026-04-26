@@ -218,6 +218,7 @@
 <!--                        (locationSelected)="onLocationSelected('currentLocationId', $event)">-->
 <!--                </app-location-dropdown>-->
                 <app-location-dropdown
+                        [selectedLabel]="currentLocationLabel"
                         placeholder="Search Current Location"
                         (locationSelected)="onLocationSelected('currentLocationId', $event)">
                 </app-location-dropdown>
@@ -246,6 +247,7 @@
 <!--                        (locationSelected)="onLocationSelected('permanentLocationId', $event)">-->
 <!--                </app-location-dropdown>-->
                 <app-location-dropdown
+                        [selectedLabel]="permanentLocationLabel"
                         placeholder="Search Permanent Location"
                         (locationSelected)="onLocationSelected('permanentLocationId', $event)">
                 </app-location-dropdown>

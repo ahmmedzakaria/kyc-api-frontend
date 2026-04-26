@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import {GisService} from "../../core/services/gis.service";
 
 interface LocationItem {
     id: string;
+    gisCode: string;
     detailLocation: string;
 }
 
@@ -19,6 +20,7 @@ interface LocationItem {
 })
 export class LocationDropdownComponent {
     @Input() placeholder = 'Search location...';
+    @Input() selectedLabel = '';
     @Output() locationSelected = new EventEmitter<LocationItem | null>();
 
     @ViewChild('dropdownList') dropdownList!: ElementRef<HTMLDivElement>;
@@ -36,6 +38,12 @@ export class LocationDropdownComponent {
 
     constructor(private gisService: GisService) {
         this.setupSearch();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if ('selectedLabel' in changes && !this.selectedLocation) {
+            this.searchTerm = this.selectedLabel || '';
+        }
     }
 
     private setupSearch() {

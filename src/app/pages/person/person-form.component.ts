@@ -27,6 +27,8 @@ export class PersonFormComponent {
 
     form!: FormGroup;
     photoPreview: string | ArrayBuffer | null = null;
+    currentLocationLabel = '';
+    permanentLocationLabel = '';
 
     // Dropdown options
     bloodGroups = [
@@ -82,9 +84,11 @@ export class PersonFormComponent {
             passingYear: [''],
 
             currentLocationId: [''],
+            currentLocationType: [''],
             currentAddress: [''],
             sameAddress: [false],
             permanentLocationId: [''],
+            permanentLocationType: [''],
             permanentAddress: ['']
         });
     }
@@ -94,6 +98,8 @@ export class PersonFormComponent {
         if (this.personData) {
             this.form.patchValue(this.personData);
             this.photoPreview = this.personData.photoUrl || null;
+            this.loadLocationLabel('current');
+            this.loadLocationLabel('permanent');
         }
 
         // Watch checkbox "sameAddress"
@@ -102,11 +108,13 @@ export class PersonFormComponent {
                 this.form.patchValue({
                     permanentAddress: this.form.value.currentAddress,
                     permanentLocationId: this.form.value.currentLocationId,
+                    permanentLocationType: this.form.value.currentLocationType,
                 });
             } else {
                 this.form.patchValue({
                     permanentAddress: '',
                     permanentLocationId: null,
+                    permanentLocationType: '',
                 });
             }
         });
@@ -121,7 +129,21 @@ export class PersonFormComponent {
     // }
 
     onLocationSelected(controlName: string, location: any) {
-        this.form.patchValue({ [controlName]: location?.id || null });
+        const patchValue: Record<string, any> = {
+            [controlName]: location?.id || null,
+        };
+
+        if (controlName === 'currentLocationId') {
+            patchValue.currentLocationType = location?.gisCode || '';
+            this.currentLocationLabel = location?.detailLocation || '';
+        }
+
+        if (controlName === 'permanentLocationId') {
+            patchValue.permanentLocationType = location?.gisCode || '';
+            this.permanentLocationLabel = location?.detailLocation || '';
+        }
+
+        this.form.patchValue(patchValue);
     }
 
 
@@ -146,6 +168,35 @@ export class PersonFormComponent {
             })
         ).subscribe((results: any) => {
             (this as any)[resultKey] = results.content;
+        });
+    }
+
+    private loadLocationLabel(type: 'current' | 'permanent'): void {
+        const idControlName = type === 'current' ? 'currentLocationId' : 'permanentLocationId';
+        const typeControlName = type === 'current' ? 'currentLocationType' : 'permanentLocationType';
+        const locationId = this.form.get(idControlName)?.value;
+        const gisCode = this.form.get(typeControlName)?.value;
+
+        if (!locationId || !gisCode) {
+            return;
+        }
+
+        this.gisService.getLocationById(locationId, gisCode).subscribe({
+            next: (location: any) => {
+                const label = location?.detailLocation || '';
+                if (type === 'current') {
+                    this.currentLocationLabel = label;
+                } else {
+                    this.permanentLocationLabel = label;
+                }
+            },
+            error: () => {
+                if (type === 'current') {
+                    this.currentLocationLabel = '';
+                } else {
+                    this.permanentLocationLabel = '';
+                }
+            }
         });
     }
 

@@ -26,5 +26,6 @@ export const ApiEndpoints: { [key: string]: ApiEndpoint } = {
     PERSON_PHOTO: { service: 'PERSON', apiPath: 'v1/person/photo', actionType: ActionTypes.SEARCH },
 
     GIS_SEARCH: { service: 'GIS', apiPath: 'locations/search', actionType: ActionTypes.SEARCH },
+    GIS_GET_BY_ID: { service: 'GIS', apiPath: 'locations/get-by-id', actionType: ActionTypes.SEARCH },
 
 };
