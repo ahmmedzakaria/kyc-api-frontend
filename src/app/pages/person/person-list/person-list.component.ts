@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
 import { PersonService } from '../../../core/services/person.service';
-import {Observable} from "rxjs"
+import {Observable, of} from "rxjs"
 import {Person} from "../person.model";
 import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
@@ -23,6 +23,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
     totalPages = 0;
     currentPage = 0;
     pageSize = 10;
+    currentSearchText = '';
     private photoObjectUrls: string[] = [];
 
     constructor(
@@ -50,13 +51,31 @@ export class PersonListComponent implements OnInit, OnDestroy {
             .pipe(
                 debounceTime(400),
                 distinctUntilChanged(),
-                filter((text): text is string => !!text && text.trim().length > 0),
-                switchMap((text: string): Observable<Person[]> =>
-                    this.service.searchPersons(text.trim(), 0, this.pageSize)
-                )
+                switchMap((text: string | null): Observable<Person[] | null> => {
+                    const normalizedText = (text || '').trim();
+
+                    if (!normalizedText) {
+                        this.currentSearchText = '';
+                        return this.service.searchPersons('', 0, this.pageSize);
+                    }
+
+                    if (normalizedText.length <= 2) {
+                        this.currentSearchText = '';
+                        return of(null);
+                    }
+
+                    this.currentSearchText = normalizedText;
+                    return this.service.searchPersons(normalizedText, 0, this.pageSize);
+                })
             )
             .subscribe({
-                next: (res) => this.populateData(res),
+                next: (res) => {
+                    if (!res) {
+                        return;
+                    }
+                    this.currentPage = 0;
+                    this.populateData(res);
+                },
                 error: (err) => console.error('Search error:', err),
             });
     }
@@ -66,7 +85,11 @@ export class PersonListComponent implements OnInit, OnDestroy {
     }
 
     loadData(page: number = 0) {
-        this.service.searchPersons(this.searchForm.value.searchText || '', page, this.pageSize)
+        const searchText = (this.searchForm?.value?.searchText || '').trim();
+        const effectiveSearchText = searchText.length > 2 ? searchText : '';
+        this.currentSearchText = effectiveSearchText;
+
+        this.service.searchPersons(effectiveSearchText, page, this.pageSize)
             .subscribe({
                 next: (res) => this.populateData(res),
             });
@@ -122,5 +145,22 @@ export class PersonListComponent implements OnInit, OnDestroy {
     private revokePhotoUrls(): void {
         this.photoObjectUrls.forEach(url => URL.revokeObjectURL(url));
         this.photoObjectUrls = [];
+    }
+
+    highlightText(value: string | undefined | null): string {
+        const text = value || '-';
+        if (!this.currentSearchText) {
+            return text;
+        }
+
+        const escapedSearchText = this.escapeRegex(this.currentSearchText);
+        return text.replace(
+            new RegExp(`(${escapedSearchText})`, 'gi'),
+            '<mark style="background-color: #f4c542; color: #1f2937; padding: 0 !important; border-radius: 0.15rem;">$1</mark>'
+        );
+    }
+
+    private escapeRegex(value: string): string {
+        return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 }

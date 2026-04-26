@@ -45,9 +45,9 @@
                             [disabled]="false">
                     </app-image-preview>
                 </td>
-                <td>{{ p.firstName }} {{ p.lastName }}</td>
-                <td>{{ p.email }}</td>
-                <td>{{ p.mobileNumber }}</td>
+                <td [innerHTML]="highlightText(([p.firstName || '', p.lastName || ''].join(' ').trim()))"></td>
+                <td [innerHTML]="highlightText(p.email)"></td>
+                <td [innerHTML]="highlightText(p.mobileNumber)"></td>
                 <td>{{ p.gender }}</td>
                 <td>{{ p.educationLevel }}</td>
                 <td>
