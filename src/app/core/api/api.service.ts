@@ -59,8 +59,9 @@ export class ApiService {
             body.source = "KYC_APP";
         }
 
-        // Decide base path: login requests go to loginUrl
-        const basePath = (apiInfo.actionType === ActionTypes.LOGIN) ? this.loginUrl : this.baseUrl;
+        const basePath = [ActionTypes.LOGIN, ActionTypes.AUTH].includes(apiInfo.actionType)
+            ? this.loginUrl
+            : this.baseUrl;
 
         const headers = options.headers || this.buildHeaders(apiInfo.isMultiPart);
         const requestOptions = {

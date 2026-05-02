@@ -1,16 +1,8 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
-import {AuthService} from "../../services/auth/auth.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-
-interface SidebarItem {
-    label: string;
-    icon?: string;
-    path?: string;
-    roles: string[];
-    children?: { label: string; path: string }[];
-}
+import {SidebarMenuItem, SidebarMenuService} from "../../services/sidebar-menu.service";
 
 @Component({
     selector: 'app-sidebar',
@@ -36,47 +28,49 @@ interface SidebarItem {
         ])
     ]
 })
-export class SidebarComponent {
-    constructor(private auth: AuthService) {}
+export class SidebarComponent implements OnInit {
+    constructor(private sidebarMenuService: SidebarMenuService) {}
 
     @Input() collapsed = false;
 
-    expandedMenu = signal<string | null>(null);
+    expandedMenus = signal<Set<string>>(new Set());
+    menuItems: SidebarMenuItem[] = [];
+    loading = true;
 
-    menuItems: SidebarItem[] = [
-        { label: 'Dashboard', path: '/dashboard', icon: 'fa fa-home', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
-        { label: 'All component demo', path: '/component-demo', icon: 'fa fa-puzzle-piece', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
-        {
-            label: 'Person',
-            icon: 'fa fa-users',
-            roles: ['ROLE_ADMIN'],
-            children: [
-                { label: 'Person List', path: '/person' },
-                { label: 'Add Person', path: '/person/create' }
-            ]
-        },
-        { label: 'Profile', path: '/profile', icon: 'fa fa-user', roles: ['ROLE_ADMIN', 'ROLE_USER'] },
-        {
-            label: 'KYC',
-            icon: 'fa fa-id-card',
-            roles: ['ROLE_ADMIN', 'ROLE_USER'],
-            children: [
-                { label: 'All Records', path: '/kyc' },
-                { label: 'Create Record', path: '/kyc/create' }
-            ]
+    ngOnInit(): void {
+        this.sidebarMenuService.loadSidebarMenu().subscribe({
+            next: menuItems => {
+                this.menuItems = menuItems || [];
+                this.loading = false;
+            },
+            error: () => {
+                this.menuItems = [];
+                this.loading = false;
+            }
+        });
+    }
+
+    hasChildren(item: SidebarMenuItem): boolean {
+        return !!item.children?.length;
+    }
+
+    handleMenuClick(item: SidebarMenuItem): void {
+        if (this.hasChildren(item)) {
+            this.toggleSubMenu(item.label);
         }
-    ];
-
-
-    get visibleItems() {
-        return this.menuItems.filter(item => item.roles.some(r => this.auth.hasRole(r)));
     }
 
     toggleSubMenu(label: string) {
-        this.expandedMenu.set(this.expandedMenu() === label ? null : label);
+        const expandedMenus = new Set(this.expandedMenus());
+        if (expandedMenus.has(label)) {
+            expandedMenus.delete(label);
+        } else {
+            expandedMenus.add(label);
+        }
+        this.expandedMenus.set(expandedMenus);
     }
 
     isExpanded(label: string): boolean {
-        return this.expandedMenu() === label;
+        return this.expandedMenus().has(label);
     }
 }

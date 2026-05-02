@@ -6,6 +6,7 @@ export enum ActionTypes {
     DELETE = 3,
     SEARCH = 4,
     LOGIN = 5,
+    AUTH = 6,
 }
 
 export const ApiEndpoints: { [key: string]: ApiEndpoint } = {
@@ -18,6 +19,7 @@ export const ApiEndpoints: { [key: string]: ApiEndpoint } = {
 
     // Authentication
     KYC_LOGIN: { service: 'LOGIN', apiPath: 'auth/authenticate', actionType: ActionTypes.LOGIN },
+    PRIVILEGE_SIDEBAR_MENU: { service: 'AUTH', apiPath: 'auth/privilege/sidebar-menu', actionType: ActionTypes.AUTH },
 
     PERSON_CREATE: { service: 'PERSON', apiPath: 'v1/person/create', actionType: ActionTypes.CREATE, isMultiPart: true },
     PERSON_UPDATE: { service: 'PERSON', apiPath: 'v1/person/update', actionType: ActionTypes.UPDATE, isMultiPart: true },
