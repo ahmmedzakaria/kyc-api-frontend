@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/shared/components/textbox/textbox.component.scss"],
-  "sourcesContent": [".textbox-component {\n  position: relative;\n\n  .btn-eye {\n    position: absolute;\n    top: 50%;\n    right: 0.75rem;\n    transform: translateY(-50%);\n    border: none;\n    background: transparent;\n    color: #6c757d;\n    cursor: pointer;\n    font-size: 1rem;\n    z-index: 5;\n\n    &:hover {\n      color: #0d6efd;\n    }\n  }\n\n  .form-floating .btn-eye {\n    top: 1rem;\n  }\n\n  .form-control:focus {\n    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);\n  }\n\n  .invalid-feedback {\n    font-size: 0.875rem;\n    color: #dc3545;\n  }\n}\n"],
-  "mappings": ";AAAA,CAAA;AACE,YAAA;;AAEA,CAHF,kBAGE,CAAA;AACE,YAAA;AACA,OAAA;AACA,SAAA;AACA,aAAA,WAAA;AACA,UAAA;AACA,cAAA;AACA,SAAA;AACA,UAAA;AACA,aAAA;AACA,WAAA;;AAEA,CAfJ,kBAeI,CAZF,OAYE;AACE,SAAA;;AAIJ,CApBF,kBAoBE,CAAA,cAAA,CAjBA;AAkBE,OAAA;;AAGF,CAxBF,kBAwBE,CAAA,YAAA;AACE,cAAA,EAAA,EAAA,EAAA,QAAA,KAAA,EAAA,EAAA,GAAA,EAAA,GAAA,EAAA;;AAGF,CA5BF,kBA4BE,CAAA;AACE,aAAA;AACA,SAAA;;",
-  "names": []
-}

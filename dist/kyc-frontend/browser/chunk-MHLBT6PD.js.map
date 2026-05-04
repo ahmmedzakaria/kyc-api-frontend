@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/core/services/gis.service.ts"],
-  "sourcesContent": ["import {Injectable} from \"@angular/core\";\nimport {Observable} from \"rxjs\";\nimport {ApiEndpoints} from \"../api/api-endpoints\";\nimport {Kyc} from \"./kyc.service\";\nimport {ApiService} from \"../api/api.service\";\n\n@Injectable({providedIn: 'root'})\nexport class GisService {\n    constructor(private apiService: ApiService) {}\n\n    searchLocation(searchText?: string, page: number = 0, size: number = 10): Observable<any> {\n        return this.apiService.post<Kyc>(ApiEndpoints.GIS_SEARCH, { page,size,searchText });\n    }\n\n    getLocationById(id: string, type: string): Observable<any> {\n        return this.apiService.post(ApiEndpoints.GIS_GET_BY_ID, { id, type });\n    }\n}\n"],
-  "mappings": ";;;;;;;;;;;;AAOM,IAAO,aAAP,MAAO,YAAU;EACC;EAApB,YAAoB,YAAsB;AAAtB,SAAA,aAAA;EAAyB;EAE7C,eAAe,YAAqB,OAAe,GAAG,OAAe,IAAE;AACnE,WAAO,KAAK,WAAW,KAAU,aAAa,YAAY,EAAE,MAAK,MAAK,WAAU,CAAE;EACtF;EAEA,gBAAgB,IAAY,MAAY;AACpC,WAAO,KAAK,WAAW,KAAK,aAAa,eAAe,EAAE,IAAI,KAAI,CAAE;EACxE;;qCATS,aAAU,mBAAA,UAAA,CAAA;EAAA;4EAAV,aAAU,SAAV,YAAU,WAAA,YADE,OAAM,CAAA;;;sEAClB,YAAU,CAAA;UADtB;WAAW,EAAC,YAAY,OAAM,CAAC;;;",
-  "names": []
-}
