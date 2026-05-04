@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent } from '../../shared/components/button/button.component';
-import { TextboxComponent } from '../../shared/components/textbox/textbox.component';
-import { PasswordGroupComponent } from '../../shared/components/password-group/password-group.component';
-import { DatePickerComponent } from '../../shared/components/date-picker/date-picker.component';
-import { RadioGroupComponent } from '../../shared/components/radio-group/radio-group.component';
-import { CardSelectorComponent } from '../../shared/components/card-selector/card-selector.component';
-import { CheckboxComponent } from '../../shared/components/checkbox/checkbox.component';
-import { TextareaComponent } from '../../shared/components/textarea/textarea.component';
-import { DropdownComponent } from '../../shared/components/dropdown/dropdown.component';
-import { SmartDropdownComponent } from '../../shared/components/smart-dropdown/smart-dropdown.component';
-import { FileUploadComponent } from '../../shared/components/file-upload/file-upload.component';
+import { ButtonComponent } from '@kyc/shared';
+import { TextboxComponent } from '@kyc/shared';
+import { PasswordGroupComponent } from '@kyc/shared';
+import { DatePickerComponent } from '@kyc/shared';
+import { RadioGroupComponent } from '@kyc/shared';
+import { CardSelectorComponent } from '@kyc/shared';
+import { CheckboxComponent } from '@kyc/shared';
+import { TextareaComponent } from '@kyc/shared';
+import { DropdownComponent } from '@kyc/shared';
+import { SmartDropdownComponent } from '@kyc/shared';
+import { FileUploadComponent } from '@kyc/shared';
 
 @Component({
     selector: 'app-component-demo',

@@ -10,10 +10,10 @@ import {GisService} from "../../core/services/gis.service";
 import {ApiService} from "../../core/api/api.service";
 import {ApiEndpoints} from "../../core/api/api-endpoints";
 import {LocationDropdownComponent} from "./location-dropdown.component";
-import {TextboxComponent} from "../../shared/components/textbox/textbox.component";
-import {SmartDropdownComponent} from "../../shared/components/smart-dropdown/smart-dropdown.component";
-import {DatePickerComponent} from "../../shared/components/date-picker/date-picker.component";
-import {FileUploadComponent} from "../../shared/components/file-upload/file-upload.component";
+import {TextboxComponent} from '@kyc/shared';
+import {SmartDropdownComponent} from '@kyc/shared';
+import {DatePickerComponent} from '@kyc/shared';
+import {FileUploadComponent} from '@kyc/shared';
 
 
 @Component({
