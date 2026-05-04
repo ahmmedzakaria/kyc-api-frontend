@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap, BehaviorSubject } from 'rxjs';
+import { tap, BehaviorSubject, switchMap, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import {ApiService} from "../../api/api.service";
 import {AuthResponse} from "../../api/model/auth-response";
 import {ApiEndpoints} from "../../api/api-endpoints";
 import {jwtDecode} from "jwt-decode";
 import {LayoutService} from "../layout.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {SidebarMenuService} from "../sidebar-menu.service";
 
 
 
@@ -26,6 +28,7 @@ export class AuthService {
     constructor(private http: HttpClient,
                 private apiService: ApiService,
                 private layoutService: LayoutService,
+                private sidebarMenuService: SidebarMenuService,
                 private router: Router,
     ) {
         const token = this.getToken();
@@ -40,14 +43,28 @@ export class AuthService {
 
     login(username: string, password: string) {
         localStorage.removeItem('token');
-        return this.apiService.post<AuthResponse>(ApiEndpoints.KYC_LOGIN, { username, password })
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('privilegeCodes');
+        localStorage.removeItem('sidebarMenus');
+
+        return this.apiService.post<AuthResponse | { data: AuthResponse }>(ApiEndpoints.KYC_LOGIN, { username, password })
             .pipe(
-                tap(res => {
+                map(response => this.unwrapAuthResponse(response)),
+                switchMap(res => {
                     if (res?.accessToken) {
                         localStorage.setItem('token', res.accessToken);
                         localStorage.setItem('refreshToken', res.refreshToken || '');
                         this.decodeAndSetUser(res.accessToken);
+                        return this.sidebarMenuService.loadApplicationContext().pipe(
+                            catchError(error => {
+                                console.error('Application context load failed after login', error);
+                                localStorage.setItem('privilegeCodes', JSON.stringify([]));
+                                localStorage.setItem('sidebarMenus', JSON.stringify([]));
+                                return of({ menus: [], privilegeCodes: [] });
+                            })
+                        );
                     }
+                    return throwError(() => new Error('Authentication response does not contain access token'));
                 })
             );
     }
@@ -55,6 +72,8 @@ export class AuthService {
     logout(redirectToLogin: boolean = true) {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
+        localStorage.removeItem('privilegeCodes');
+        localStorage.removeItem('sidebarMenus');
         this.clearLogoutTimer();
         this.currentUserSubject.next(null);
         this.layoutService.setPublicLayout();
@@ -101,6 +120,11 @@ export class AuthService {
         return this.currentUserSubject.value?.roles?.includes(role) ?? false;
     }
 
+    hasPrivilege(privilegeCode: string): boolean {
+        const privilegeCodes = JSON.parse(localStorage.getItem('privilegeCodes') || '[]') as string[];
+        return privilegeCodes.includes(privilegeCode);
+    }
+
     private isTokenExpired(token: string): boolean {
         try {
             const decoded: DecodedToken = jwtDecode(token);
@@ -129,5 +153,9 @@ export class AuthService {
             clearTimeout(this.logoutTimerId);
             this.logoutTimerId = null;
         }
+    }
+
+    private unwrapAuthResponse(response: AuthResponse | { data: AuthResponse }): AuthResponse {
+        return (response as { data: AuthResponse })?.data || response as AuthResponse;
     }
 }
