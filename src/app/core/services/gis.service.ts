@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiEndpoints} from "../api/api-endpoints";
 import {Kyc} from "./kyc.service";
-import {ApiService} from "../api/api.service";
+import {ApiService} from "@kyc/api-common";
 
 @Injectable({providedIn: 'root'})
 export class GisService {

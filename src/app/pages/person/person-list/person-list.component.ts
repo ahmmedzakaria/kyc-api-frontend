@@ -6,7 +6,7 @@ import { PersonService } from '../../../core/services/person.service';
 import {Observable, of} from "rxjs"
 import {Person} from "../person.model";
 import {Router, RouterLink} from "@angular/router";
-import {ApiService} from "../../../core/api/api.service";
+import {ApiService} from "@kyc/api-common";
 import {ApiEndpoints} from "../../../core/api/api-endpoints";
 import { ImagePreviewComponent } from '@kyc/shared';
 

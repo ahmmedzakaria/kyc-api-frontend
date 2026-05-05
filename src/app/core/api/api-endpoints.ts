@@ -1,13 +1,4 @@
-import {ApiEndpoint} from "./model/endpoint";
-
-export enum ActionTypes {
-    CREATE = 1,
-    UPDATE = 2,
-    DELETE = 3,
-    SEARCH = 4,
-    LOGIN = 5,
-    AUTH = 6,
-}
+import {ActionTypes, ApiEndpoint} from "@kyc/api-common";
 
 export const ApiEndpoints: { [key: string]: ApiEndpoint } = {
     // KYC

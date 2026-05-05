@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import {ApiService} from "../../core/api/api.service";
+import {ApiService} from "@kyc/api-common";
 import {ApiEndpoints} from "../../core/api/api-endpoints";
 
 @Component({

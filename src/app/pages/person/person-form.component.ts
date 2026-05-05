@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import {Person} from "./person.model";
 import {PersonService} from "../../core/services/person.service";
 import {GisService} from "../../core/services/gis.service";
-import {ApiService} from "../../core/api/api.service";
+import {ApiService} from "@kyc/api-common";
 import {ApiEndpoints} from "../../core/api/api-endpoints";
 import {LocationDropdownComponent} from "./location-dropdown.component";
 import {TextboxComponent} from '@kyc/shared';
