@@ -11,6 +11,11 @@ export const routes: Routes = [
         canActivate: [loginGuard],
     },
     {
+        path: 'auth/callback',
+        loadComponent: () =>
+            import('@nexacore/auth').then(m => m.SsoCallbackComponent),
+    },
+    {
         path: '',
         loadComponent: () =>
             import('@nexacore/layout').then(m => m.LayoutComponent),
