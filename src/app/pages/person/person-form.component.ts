@@ -7,13 +7,13 @@ import { of } from 'rxjs';
 import {Person} from "./person.model";
 import {PersonService} from "../../core/services/person.service";
 import {GisService} from "../../core/services/gis.service";
-import {ApiService} from "@kyc/api-common";
+import {ApiService} from "@nexacore/api-common";
 import {ApiEndpoints} from "../../core/api/api-endpoints";
 import {LocationDropdownComponent} from "./location-dropdown.component";
-import {TextboxComponent} from '@kyc/shared';
-import {SmartDropdownComponent} from '@kyc/shared';
-import {DatePickerComponent} from '@kyc/shared';
-import {FileUploadComponent} from '@kyc/shared';
+import {TextboxComponent} from '@nexacore/shared';
+import {SmartDropdownComponent} from '@nexacore/shared';
+import {DatePickerComponent} from '@nexacore/shared';
+import {FileUploadComponent} from '@nexacore/shared';
 
 
 @Component({

@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-APP_NAME="kyc-frontend"
-IMAGE_NAME="kyc-frontend"
-CONTAINER_NAME="kyc-frontend"
+APP_NAME="nexacore-frontend"
+IMAGE_NAME="nexacore-frontend"
+CONTAINER_NAME="nexacore-frontend"
 PORT="4200"
 
 echo "🚀 Building ${APP_NAME} Docker image..."

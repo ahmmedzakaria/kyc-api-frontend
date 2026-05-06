@@ -6,9 +6,9 @@ import { PersonService } from '../../../core/services/person.service';
 import {Observable, of} from "rxjs"
 import {Person} from "../person.model";
 import {Router, RouterLink} from "@angular/router";
-import {ApiService} from "@kyc/api-common";
+import {ApiService} from "@nexacore/api-common";
 import {ApiEndpoints} from "../../../core/api/api-endpoints";
-import { ImagePreviewComponent } from '@kyc/shared';
+import { ImagePreviewComponent } from '@nexacore/shared';
 
 @Component({
     selector: 'app-person-list',

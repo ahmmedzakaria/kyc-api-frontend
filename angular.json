@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "kyc-frontend": {
+    "nexacore-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/kyc-frontend",
+            "outputPath": "dist/nexacore-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -78,10 +78,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "kyc-frontend:build:production"
+              "buildTarget": "nexacore-frontend:build:production"
             },
             "development": {
-              "buildTarget": "kyc-frontend:build:development"
+              "buildTarget": "nexacore-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -88,7 +88,7 @@
                 label="District"
                 mode="api-simple"
                 apiUrl="/api/locations/search"
-                [requestBody]="{ searchText: '', page: 0, size: 10, source: 'KYC_APP' }"
+                [requestBody]="{ searchText: '', page: 0, size: 10, source: 'NEXACORE_APP' }"
                 formControlName="district">
         </app-smart-dropdown>
 
@@ -96,7 +96,7 @@
                 label="Village"
                 mode="api-scroll"
                 apiUrl="/api/locations/search"
-                [requestBody]="{ searchText: '', page: 0, size: 10, source: 'KYC_APP' }"
+                [requestBody]="{ searchText: '', page: 0, size: 10, source: 'NEXACORE_APP' }"
                 [pageSize]="20"
                 formControlName="village">
         </app-smart-dropdown>

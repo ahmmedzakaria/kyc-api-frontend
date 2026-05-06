@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Kyc, KycService } from '../../core/services/kyc.service';
 import {NgIf} from "@angular/common";
-import {KycTableComponent} from '@kyc/shared';
-import {KycFormComponent} from '@kyc/shared';
+import {KycTableComponent} from '@nexacore/shared';
+import {KycFormComponent} from '@nexacore/shared';
 import {RouterLink} from "@angular/router";
 
 @Component({

@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent } from '@kyc/shared';
-import { TextboxComponent } from '@kyc/shared';
-import { PasswordGroupComponent } from '@kyc/shared';
-import { DatePickerComponent } from '@kyc/shared';
-import { RadioGroupComponent } from '@kyc/shared';
-import { CardSelectorComponent } from '@kyc/shared';
-import { CheckboxComponent } from '@kyc/shared';
-import { TextareaComponent } from '@kyc/shared';
-import { DropdownComponent } from '@kyc/shared';
-import { SmartDropdownComponent } from '@kyc/shared';
-import { FileUploadComponent } from '@kyc/shared';
+import { ButtonComponent } from '@nexacore/shared';
+import { TextboxComponent } from '@nexacore/shared';
+import { PasswordGroupComponent } from '@nexacore/shared';
+import { DatePickerComponent } from '@nexacore/shared';
+import { RadioGroupComponent } from '@nexacore/shared';
+import { CardSelectorComponent } from '@nexacore/shared';
+import { CheckboxComponent } from '@nexacore/shared';
+import { TextareaComponent } from '@nexacore/shared';
+import { DropdownComponent } from '@nexacore/shared';
+import { SmartDropdownComponent } from '@nexacore/shared';
+import { FileUploadComponent } from '@nexacore/shared';
 
 @Component({
     selector: 'app-component-demo',

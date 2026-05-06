@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Kyc } from '../../core/services/kyc.service';
-import {KycFormComponent} from '@kyc/shared';
+import {KycFormComponent} from '@nexacore/shared';
 
 @Component({
     selector: 'app-kyc-create',

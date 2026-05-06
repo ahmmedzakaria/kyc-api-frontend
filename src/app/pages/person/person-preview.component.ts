@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Person } from './person.model';
-import { ApiService } from '@kyc/api-common';
+import { ApiService } from '@nexacore/api-common';
 import { ApiEndpoints } from '../../core/api/api-endpoints';
 import { GisService } from '../../core/services/gis.service';
-import { ImagePreviewComponent } from '@kyc/shared';
+import { ImagePreviewComponent } from '@nexacore/shared';
 
 @Component({
     selector: 'app-person-preview',
