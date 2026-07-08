@@ -10,8 +10,8 @@ export const ApiEndpoints: { [key: string]: ApiEndpoint } = {
 
     // Authentication
     KYC_LOGIN: { service: 'LOGIN', apiPath: 'auth/authenticate', actionType: ActionTypes.LOGIN },
-    PRIVILEGE_CONTEXT: { service: 'AUTH', apiPath: 'auth/privilege/context', actionType: ActionTypes.AUTH },
-    PRIVILEGE_SIDEBAR_MENU: { service: 'AUTH', apiPath: 'auth/privilege/sidebar-menu', actionType: ActionTypes.AUTH },
+    PRIVILEGE_CONTEXT: { service: 'SYSTEM', apiPath: 'system/privilege/context', actionType: ActionTypes.AUTH },
+    PRIVILEGE_SIDEBAR_MENU: { service: 'SYSTEM', apiPath: 'system/privilege/sidebar-menu', actionType: ActionTypes.AUTH },
 
     PERSON_CREATE: { service: 'PERSON', apiPath: 'v1/person/create', actionType: ActionTypes.CREATE, isMultiPart: true },
     PERSON_UPDATE: { service: 'PERSON', apiPath: 'v1/person/update', actionType: ActionTypes.UPDATE, isMultiPart: true },
