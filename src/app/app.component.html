@@ -1,3 +1,7 @@
-<div id="app-root" [attr.data-bs-theme]="layoutService.theme()">
+<div
+        id="app-root"
+        [attr.data-bs-theme]="layoutService.bootstrapTheme()"
+        [attr.data-nc-theme]="layoutService.theme()"
+>
     <router-outlet></router-outlet>
 </div>
